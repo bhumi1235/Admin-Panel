@@ -284,14 +284,7 @@ function SupervisorDetails() {
                             <h2 className="details-section-title" style={{ margin: 0 }}>
                                 Assigned Guards
                             </h2>
-                            <button
-                                onClick={() => navigate('/guards/add', { state: { supervisorId: id } })}
-                                className="btn-add-supervisor"
-                                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-                            >
-                                <UserPlus size={18} />
-                                Add Guard
-                            </button>
+
                         </div>
                         <Table
                             columns={columns}

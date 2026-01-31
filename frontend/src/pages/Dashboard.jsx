@@ -80,13 +80,7 @@ function Dashboard() {
                             color="secondary"
                             onClick={() => navigate('/all-guards')}
                         />
-                        <StatCard
-                            icon={ShieldCheck}
-                            title="Active Guards"
-                            value={stats.activeGuards}
-                            color="success"
-                            onClick={() => navigate('/all-guards')}
-                        />
+
                     </div>
 
                     {/* Quick Actions */}
