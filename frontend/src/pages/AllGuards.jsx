@@ -201,14 +201,6 @@ function AllGuards() {
                             </p>
                         </div>
                         <div style={{ display: "flex", gap: "1rem" }}>
-                            <button
-                                onClick={() => navigate('/guards/add')}
-                                className="btn-add-supervisor"
-                                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-                            >
-                                <UserPlus size={18} />
-                                Add Guard
-                            </button>
 
                             {/* Download Dropdown */}
                             <div className="download-dropdown-container">
