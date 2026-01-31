@@ -9,9 +9,9 @@ import resetRoutes from "./routes/resetRoutes.js";
 import { protect, authorize } from "./middlewares/authMiddleware.js";
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
+app.options("*", cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
