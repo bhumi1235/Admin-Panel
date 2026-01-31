@@ -21,6 +21,7 @@ function AddGuard() {
         dateOfBirth: "",
         emergencyContact: "",
         assignedArea: "",
+        password: "",
         status: "Active",
         supervisorId: preSelectedSupervisorId || ""
     });
@@ -73,6 +74,11 @@ function AddGuard() {
         if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required";
         if (!formData.emergencyContact.trim()) newErrors.emergencyContact = "Emergency contact is required";
         if (!formData.assignedArea.trim()) newErrors.assignedArea = "Assigned area is required";
+        if (!formData.password.trim()) {
+            newErrors.password = "Password is required";
+        } else if (formData.password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters";
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -194,6 +200,17 @@ function AddGuard() {
                                     onChange={handleChange}
                                     placeholder="e.g. Main Gate, Sector A"
                                     error={errors.assignedArea}
+                                    required
+                                />
+
+                                <FormInput
+                                    label="Password"
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="Min. 6 characters"
+                                    error={errors.password}
                                     required
                                 />
 

@@ -17,16 +17,16 @@ export const protect = async (req, res, next) => {
 
             // Get user from token
             // Check admins/users table first
-            let userRes = await query("SELECT id, email, name, role FROM users WHERE id = $1", [decoded.id]);
+            let userRes = await query("SELECT id, email, name, role, created_at FROM users WHERE id = $1", [decoded.id]);
 
             if (userRes.rowCount === 0) {
                 // Check supervisors table
-                userRes = await query("SELECT id, email, full_name as name, role FROM supervisors WHERE id = $1", [decoded.id]);
+                userRes = await query("SELECT id, email, full_name as name, role, created_at FROM supervisors WHERE id = $1", [decoded.id]);
             }
 
             if (userRes.rowCount === 0) {
                 // Check guards table
-                userRes = await query("SELECT id, email, full_name as name, role FROM guards WHERE id = $1", [decoded.id]);
+                userRes = await query("SELECT id, email, full_name as name, role, created_at FROM guards WHERE id = $1", [decoded.id]);
             }
 
             if (userRes.rowCount === 0) {

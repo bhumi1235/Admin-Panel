@@ -43,6 +43,7 @@ export const login = async (req, res) => {
           name: user.name || user.full_name,
           email: user.email,
           role: user.role,
+          createdAt: user.created_at,
           token: generateToken(user.id),
         });
       } else {

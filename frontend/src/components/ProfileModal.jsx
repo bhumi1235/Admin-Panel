@@ -33,10 +33,17 @@ function ProfileModal({ isOpen, onClose }) {
 
     if (!isOpen) return null;
 
-    const adminName = user?.name || "Admin";
-    const adminEmail = user?.email || "admin@example.com";
-    const userRole = user?.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : "Administrator";
-    const joinDate = "January 2024";
+    const adminName = user?.name || "User";
+    const adminEmail = user?.email || "";
+    const userRole = user?.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : "User";
+
+    // Format join date
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    };
+    const joinDate = formatDate(user?.createdAt || user?.created_at);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

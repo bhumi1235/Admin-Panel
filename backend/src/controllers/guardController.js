@@ -1,6 +1,7 @@
 import { query, mapGuard } from "../config/db.js";
+import bcrypt from "bcryptjs";
 
-const ALLOWED = ["fullName", "email", "phone", "address", "dateOfBirth", "emergencyContact", "assignedArea", "status", "supervisorId"];
+const ALLOWED = ["fullName", "email", "phone", "password", "address", "dateOfBirth", "emergencyContact", "assignedArea", "status", "supervisorId"];
 const COL = { fullName: "full_name", dateOfBirth: "date_of_birth", emergencyContact: "emergency_contact", assignedArea: "assigned_area", supervisorId: "supervisor_id" };
 
 export async function getAll(req, res) {
@@ -22,9 +23,20 @@ export async function create(req, res) {
 
     for (const k of ALLOWED) {
       if (data[k] === undefined) continue;
+      let val = data[k];
+
+      if (k === "password") {
+        if (val) {
+          const salt = await bcrypt.genSalt(10);
+          val = await bcrypt.hash(val, salt);
+        } else {
+          continue; // Skip if password is empty
+        }
+      }
+
       cols.push(COL[k] || k);
       syms.push(`$${i}`);
-      vals.push(data[k]);
+      vals.push(val);
       i++;
     }
 
@@ -68,8 +80,19 @@ export async function update(req, res) {
     for (const k of ALLOWED) {
       if (updates[k] === undefined) continue;
       const col = COL[k] || k;
+      let val = updates[k];
+
+      if (k === "password") {
+        if (val) {
+          const salt = await bcrypt.genSalt(10);
+          val = await bcrypt.hash(val, salt);
+        } else {
+          continue; // Don't update password if empty string provided
+        }
+      }
+
       setParts.push(`${col} = $${i}`);
-      vals.push(updates[k]);
+      vals.push(val);
       i++;
     }
     if (setParts.length === 0) {

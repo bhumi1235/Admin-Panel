@@ -33,9 +33,12 @@ export async function initSchema() {
   // Migration: Add role column if it doesn't exist
   try {
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) NOT NULL DEFAULT 'admin'`);
+    await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
     await query(`ALTER TABLE supervisors ADD COLUMN IF NOT EXISTS role VARCHAR(50) NOT NULL DEFAULT 'supervisor'`);
+    await query(`ALTER TABLE supervisors ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
     await query(`ALTER TABLE guards ADD COLUMN IF NOT EXISTS role VARCHAR(50) NOT NULL DEFAULT 'guard'`);
     await query(`ALTER TABLE guards ADD COLUMN IF NOT EXISTS password VARCHAR(255)`);
+    await query(`ALTER TABLE guards ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`);
   } catch (err) {
     console.log("Migration (columns) maybe already done or failed:", err.message);
   }
@@ -47,7 +50,8 @@ export async function initSchema() {
       email VARCHAR(255) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
       name VARCHAR(255) NOT NULL DEFAULT 'Admin',
-      role VARCHAR(50) NOT NULL DEFAULT 'admin'
+      role VARCHAR(50) NOT NULL DEFAULT 'admin',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
 
@@ -61,7 +65,7 @@ export async function initSchema() {
       password VARCHAR(255) NOT NULL,
       role VARCHAR(50) NOT NULL DEFAULT 'supervisor',
       status VARCHAR(20) NOT NULL DEFAULT 'Active',
-      created_date DATE NOT NULL DEFAULT CURRENT_DATE
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
 
@@ -79,16 +83,17 @@ export async function initSchema() {
       emergency_contact VARCHAR(50) NOT NULL,
       assigned_area VARCHAR(255) NOT NULL,
       status VARCHAR(20) NOT NULL DEFAULT 'Active',
-      supervisor_id INTEGER REFERENCES supervisors(id) ON DELETE SET NULL
+      supervisor_id INTEGER REFERENCES supervisors(id) ON DELETE SET NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
 
-  // Ensure Admin user exists
-  console.log("Checking for default admin user...");
-  const adminCheck = await query("SELECT id FROM users WHERE email = $1", ["admin@example.com"]);
+  // Ensure at least one Admin user exists
+  console.log("Checking for admin users...");
+  const adminCheck = await query("SELECT id FROM users LIMIT 1");
 
   if (adminCheck.rowCount === 0) {
-    console.log("Admin not found. Seeding default admin user...");
+    console.log("No users found. Seeding default admin user...");
     const adminPassword = "admin123";
     const salt = await bcrypt.genSalt(10);
     const hashedAdminPassword = await bcrypt.hash(adminPassword, salt);
@@ -98,9 +103,9 @@ export async function initSchema() {
        VALUES ($1, $2, $3, $4)`,
       ["admin@example.com", hashedAdminPassword, "Admin", "admin"]
     );
-    console.log("Admin user seeded.");
+    console.log("Default admin user seeded. Username: admin@example.com, Password: admin123");
   } else {
-    console.log("Admin user already exists.");
+    console.log("Users already exist. Skipping seed.");
   }
 }
 
