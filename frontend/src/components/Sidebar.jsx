@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Shield, LogOut, ChevronDown, ChevronRight, UserPlus, ShieldCheck, AlertTriangle } from "lucide-react";
+import { LayoutDashboard, Users, Shield, LogOut, ChevronDown, ChevronRight, UserPlus, ShieldCheck, AlertTriangle, Calendar } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import "../styles/components/Sidebar.css";
@@ -109,6 +109,15 @@ function Sidebar() {
                     <span>Incident Reports</span>
                 </Link>
 
+                {/* Schedule */}
+                <Link
+                    to="/schedule"
+                    className={`sidebar-item ${isActive("/schedule") ? "active" : ""}`}
+                >
+                    <Calendar size={22} strokeWidth={isActive("/schedule") ? 2.5 : 2} />
+                    <span>Shift Schedule</span>
+                </Link>
+
                 {/* Quick Actions */}
                 <div className="sidebar-group-label" style={{ padding: '1rem 1.25rem 0.5rem', fontSize: '0.75rem', opacity: 0.6, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Quick Actions
@@ -141,7 +150,7 @@ function Sidebar() {
                     © 2024 SecureGuard
                 </p>
             </div>
-        </aside>
+        </aside >
     );
 }
 
