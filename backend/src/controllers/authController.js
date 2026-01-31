@@ -15,19 +15,19 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check in users(admins) table
-    let userRes = await query("SELECT * FROM users WHERE email = $1", [email]);
+    // Check in users(admins) table - Case insensitive
+    let userRes = await query("SELECT * FROM users WHERE LOWER(TRIM(email)) = LOWER(TRIM($1))", [email]);
     let table = "users";
 
     if (userRes.rowCount === 0) {
       // Check in supervisors
-      userRes = await query("SELECT * FROM supervisors WHERE email = $1", [email]);
+      userRes = await query("SELECT * FROM supervisors WHERE LOWER(TRIM(email)) = LOWER(TRIM($1))", [email]);
       table = "supervisors";
     }
 
     if (userRes.rowCount === 0) {
       // Check in guards
-      userRes = await query("SELECT * FROM guards WHERE email = $1", [email]);
+      userRes = await query("SELECT * FROM guards WHERE LOWER(TRIM(email)) = LOWER(TRIM($1))", [email]);
       table = "guards";
     }
 
@@ -51,6 +51,16 @@ export const login = async (req, res) => {
       }
     } else {
       console.log(`Login attempt failed: Email ${email} not found in any user table.`);
+
+      // Safety check: if no admins exist at all, suggest seeding
+      const anyUser = await query("SELECT 1 FROM users LIMIT 1");
+      if (anyUser.rowCount === 0) {
+        return res.status(401).json({
+          message: "No administrator found in system. Please run seed-admin endpoint.",
+          action_required: "seed_needed"
+        });
+      }
+
       res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
@@ -161,7 +171,8 @@ export const updateProfile = async (req, res) => {
 export const seedAdmin = async (req, res) => {
   try {
     console.log("Starting exhaustive manual seed...");
-    const adminPassword = "admin123";
+    const adminEmail = process.env.INITIAL_ADMIN_EMAIL || "admin@example.com";
+    const adminPassword = process.env.INITIAL_ADMIN_PASSWORD || "admin123";
     const salt = await bcrypt.genSalt(10);
     const hashedAdminPassword = await bcrypt.hash(adminPassword, salt);
 
@@ -203,12 +214,12 @@ export const seedAdmin = async (req, res) => {
     `);
 
     // 2. Clear then Insert/Update Admin to be absolutely sure
-    await query("DELETE FROM users WHERE email = $1", ["admin@example.com"]);
+    await query("DELETE FROM users WHERE LOWER(TRIM(email)) = LOWER(TRIM($1))", [adminEmail]);
     const result = await query(
       `INSERT INTO users (email, password, name, role) 
        VALUES ($1, $2, $3, $4)
        RETURNING id, email`,
-      ["admin@example.com", hashedAdminPassword, "Admin", "admin"]
+      [adminEmail, hashedAdminPassword, "Admin", "admin"]
     );
 
     // 3. Get total counts for diagnosis

@@ -89,23 +89,24 @@ export async function initSchema() {
   `);
 
   // Ensure at least one Admin user exists
-  console.log("Checking for admin users...");
+  console.log("Checking for admin users in 'users' table...");
   const adminCheck = await query("SELECT id FROM users LIMIT 1");
 
   if (adminCheck.rowCount === 0) {
-    console.log("No users found. Seeding default admin user...");
-    const adminPassword = "admin123";
+    console.log("CRITICAL: No administrator found. Seeding initial admin user...");
+    const adminEmail = process.env.INITIAL_ADMIN_EMAIL || "admin@example.com";
+    const adminPassword = process.env.INITIAL_ADMIN_PASSWORD || "admin123";
     const salt = await bcrypt.genSalt(10);
     const hashedAdminPassword = await bcrypt.hash(adminPassword, salt);
 
     await query(
       `INSERT INTO users (email, password, name, role) 
        VALUES ($1, $2, $3, $4)`,
-      ["admin@example.com", hashedAdminPassword, "Admin", "admin"]
+      [adminEmail, hashedAdminPassword, "Admin", "admin"]
     );
-    console.log("Default admin user seeded. Username: admin@example.com, Password: admin123");
+    console.log(`SUCCESS: Initial admin user seeded (${adminEmail}).`);
   } else {
-    console.log("Users already exist. Skipping seed.");
+    console.log("INFO: Administrative users already exist. Skipping seed.");
   }
 }
 
