@@ -183,7 +183,8 @@ export const seedAdmin = async (req, res) => {
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL DEFAULT 'Admin',
-        role VARCHAR(50) NOT NULL DEFAULT 'admin'
+        role VARCHAR(50) NOT NULL DEFAULT 'admin',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       
       CREATE TABLE IF NOT EXISTS supervisors (
@@ -194,7 +195,7 @@ export const seedAdmin = async (req, res) => {
         password VARCHAR(255) NOT NULL,
         role VARCHAR(50) NOT NULL DEFAULT 'supervisor',
         status VARCHAR(20) NOT NULL DEFAULT 'Active',
-        created_date DATE NOT NULL DEFAULT CURRENT_DATE
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       
       CREATE TABLE IF NOT EXISTS guards (
@@ -209,7 +210,8 @@ export const seedAdmin = async (req, res) => {
         emergency_contact VARCHAR(50) NOT NULL,
         assigned_area VARCHAR(255) NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'Active',
-        supervisor_id INTEGER REFERENCES supervisors(id) ON DELETE SET NULL
+        supervisor_id INTEGER REFERENCES supervisors(id) ON DELETE SET NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
