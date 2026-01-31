@@ -9,15 +9,9 @@ import resetRoutes from "./routes/resetRoutes.js";
 import { protect, authorize } from "./middlewares/authMiddleware.js";
 
 const app = express();
-const corsOptions = {
-  origin: true,
-  credentials: true,
-  optionSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(cors()); // Default = Allow All Origins (Works best for Vercel->Railway)
 app.use(express.json());
-app.options("*", cors(corsOptions));
+app.options("*", cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -27,7 +21,11 @@ app.use("/api/guards", protect, guardRoutes);
 app.use("/api/dashboard", protect, dashboardRoutes);
 app.use("/api/reset-database", resetRoutes);
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ ok: true, message: "Security Guard Admin API" });
+  res.status(200).json({
+    ok: true,
+    message: "Security Guard Admin API",
+    deployment_time: new Date().toISOString()
+  });
 });
 
 export default app;
