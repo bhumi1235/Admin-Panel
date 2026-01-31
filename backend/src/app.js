@@ -9,9 +9,15 @@ import resetRoutes from "./routes/resetRoutes.js";
 import { protect, authorize } from "./middlewares/authMiddleware.js";
 
 const app = express();
-app.use(cors({ origin: true, credentials: true }));
+const corsOptions = {
+  origin: true,
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.options("*", cors());
+app.options("*", cors(corsOptions));
 
 // Routes
 app.use("/api/auth", authRoutes);
