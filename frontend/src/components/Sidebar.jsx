@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Shield, LogOut, ChevronDown, ChevronRight, UserPlus, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Users, Shield, LogOut, ChevronDown, ChevronRight, UserPlus, ShieldCheck, AlertTriangle, Calendar } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import "../styles/components/Sidebar.css";
@@ -112,7 +112,7 @@ function Sidebar() {
                     © 2024 SecureGuard
                 </p>
             </div>
-        </aside>
+        </aside >
     );
 }
 
