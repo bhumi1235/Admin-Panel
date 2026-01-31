@@ -12,7 +12,8 @@ function Dashboard() {
     const [stats, setStats] = useState({
         totalSupervisors: 0,
         activeSupervisors: 0,
-        totalGuards: 0
+        totalGuards: 0,
+        activeGuards: 0
     });
 
     const fetchDashboard = async () => {
@@ -77,6 +78,13 @@ function Dashboard() {
                             title="Total Guards"
                             value={stats.totalGuards}
                             color="secondary"
+                            onClick={() => navigate('/all-guards')}
+                        />
+                        <StatCard
+                            icon={ShieldCheck}
+                            title="Active Guards"
+                            value={stats.activeGuards}
+                            color="success"
                             onClick={() => navigate('/all-guards')}
                         />
                     </div>
