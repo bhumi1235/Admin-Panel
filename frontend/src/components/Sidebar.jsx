@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Shield, LogOut, ChevronDown, ChevronRight, UserPlus, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Users, Shield, LogOut, ChevronDown, ChevronRight, UserPlus, ShieldCheck, AlertTriangle } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import "../styles/components/Sidebar.css";
@@ -98,6 +98,15 @@ function Sidebar() {
                 >
                     <Shield size={22} strokeWidth={isActive("/all-guards") ? 2.5 : 2} />
                     <span>All Guards</span>
+                </Link>
+
+                {/* Incidents */}
+                <Link
+                    to="/incidents"
+                    className={`sidebar-item ${isActive("/incidents") ? "active" : ""}`}
+                >
+                    <AlertTriangle size={22} strokeWidth={isActive("/incidents") ? 2.5 : 2} />
+                    <span>Incident Reports</span>
                 </Link>
 
                 {/* Quick Actions */}
