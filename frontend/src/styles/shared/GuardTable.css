@@ -1,0 +1,174 @@
+.guard-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.guard-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(13, 115, 119, 0.25);
+}
+
+.guard-name-text {
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+}
+
+.guard-phone-cell {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.area-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(13, 115, 119, 0.08) 0%, rgba(20, 160, 165, 0.08) 100%);
+    border: 1px solid rgba(13, 115, 119, 0.15);
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #0d7377;
+    white-space: nowrap;
+}
+
+.supervisor-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.08) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #2563eb;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.status-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.12) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #059669;
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.12) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #dc2626;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.status-active .status-dot {
+    background: #10b981;
+}
+
+.status-inactive .status-dot {
+    background: #ef4444;
+}
+
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.download-dropdown-container {
+    position: relative;
+}
+
+.btn-download {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+    /* Ensure it appears above the sticky navbar (1000) */
+    min-width: 160px;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #f9fafb;
+}

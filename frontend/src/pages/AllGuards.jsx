@@ -1,0 +1,260 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import Table from "../components/Table";
+import { Shield, UserCheck, Trash2, Download, ChevronDown, UserPlus } from "lucide-react";
+import api from "../api/api";
+import { exportToPDF, exportToExcel } from "../utils/exportUtils";
+import "../styles/global/layout.css";
+import "../styles/shared/GuardTable.css";
+
+function AllGuards() {
+    const navigate = useNavigate();
+    const [guards, setGuards] = useState([]);
+    const [supervisors, setSupervisors] = useState([]);
+    const [stats, setStats] = useState({
+        total: 0,
+        assigned: 0,
+        unassigned: 0
+    });
+    const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+
+    useEffect(() => {
+        const fetchAllGuards = async () => {
+            try {
+                // guards
+                const guardsRes = await api.get(`/api/guards`);
+                const g = guardsRes.data;
+
+                const formattedGuards = g.map(guard => ({
+                    id: guard.id,
+                    name: guard.fullName,
+                    phone: guard.phone,
+                    assignedArea: guard.assignedArea,
+                    supervisorId: guard.supervisorId,
+                    status: guard.status
+                }));
+
+                setGuards(formattedGuards);
+
+                // supervisors
+                const supRes = await api.get(`/api/supervisors`);
+                const s = supRes.data;
+
+                const formattedSup = s.map(sp => ({
+                    id: sp.id,
+                    fullName: sp.full_name
+                }));
+
+                setSupervisors(formattedSup);
+
+                // stats
+                const assigned = formattedGuards.filter(g => g.supervisorId).length;
+                setStats({
+                    total: formattedGuards.length,
+                    assigned: assigned,
+                    unassigned: formattedGuards.length - assigned
+                });
+
+            } catch (err) {
+                console.error("Failed to load guards:", err);
+            }
+        };
+
+        fetchAllGuards();
+    }, [navigate]);
+
+
+
+
+    const getSupervisorName = (supervisorId) => {
+        const supervisor = supervisors.find(s => s.id === supervisorId);
+        return supervisor ? supervisor.fullName : 'Unassigned';
+    };
+
+    const handleGuardClick = (guard) => {
+        navigate(`/guards/${guard.id}`);
+    };
+
+    const columns = [
+        {
+            header: "Guard Name",
+            accessor: "name",
+            render: (row) => (
+                <div className="guard-name-cell">
+                    <div className="guard-avatar">
+                        {row.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    <span className="guard-name-text">
+                        {row.name}
+                    </span>
+                </div>
+            )
+        },
+        {
+            header: "Phone Number",
+            accessor: "phone",
+            render: (row) => (
+                <div className="guard-phone-cell">
+                    {row.phone}
+                </div>
+            )
+        },
+        {
+            header: "Assigned Area",
+            accessor: "assignedArea",
+            render: (row) => (
+                <div className="area-badge">
+                    <Shield size={15} strokeWidth={2.5} />
+                    {row.assignedArea}
+                </div>
+            )
+        },
+        {
+            header: "Supervisor",
+            accessor: "supervisorId",
+            render: (row) => {
+                const supervisorName = getSupervisorName(row.supervisorId);
+                return (
+                    <div className="supervisor-badge">
+                        <UserCheck size={15} strokeWidth={2.5} />
+                        {supervisorName}
+                    </div>
+                );
+            }
+        },
+        {
+            header: "Status",
+            accessor: "status",
+            render: (row) => (
+                <span className={`status-label ${row.status === "Active" ? "status-active" : "status-inactive"}`}>
+                    <div className="status-dot"></div>
+                    {row.status}
+                </span>
+            )
+        },
+        {
+            header: "Actions",
+            render: (row) => (
+                <button
+                    onClick={async (e) => {
+                        e.stopPropagation();
+                        if (window.confirm(`Are you sure you want to delete ${row.name}?`)) {
+                            try {
+                                await api.delete(`/api/guards/${row.id}`);
+                                // Refresh the list
+                                const guardsRes = await api.get(`/api/guards`);
+                                const g = guardsRes.data;
+                                const formattedGuards = g.map(guard => ({
+                                    id: guard.id,
+                                    name: guard.fullName,
+                                    phone: guard.phone,
+                                    assignedArea: guard.assignedArea,
+                                    supervisorId: guard.supervisorId,
+                                    status: guard.status
+                                }));
+                                setGuards(formattedGuards);
+                            } catch (err) {
+                                console.error("Failed to delete guard:", err);
+                                alert("Failed to delete guard. Please try again.");
+                            }
+                        }
+                    }}
+                    className="btn-delete"
+                >
+                    <Trash2 size={14} />
+                    Delete
+                </button>
+            )
+        }
+    ];
+
+    const handleDownload = async (format) => {
+        setIsDownloadOpen(false);
+        const fileName = `All_Guards_${new Date().toISOString().split('T')[0]}`;
+        const title = "All Security Guards List";
+
+        if (format === 'pdf') {
+            exportToPDF(title, columns, guards, fileName);
+        } else {
+            await exportToExcel(guards, fileName, columns);
+        }
+    };
+
+    return (
+        <div className="page-container">
+            <Sidebar />
+
+            <div className="page-main">
+                <Navbar />
+
+                <div className="page-content">
+                    {/* Header */}
+                    <div className="page-header">
+                        <div>
+                            <h1 className="page-title">
+                                All Security Guards
+                            </h1>
+                            <p className="page-subtitle">
+                                View all guards with their assignment status
+                            </p>
+                        </div>
+                        <div style={{ display: "flex", gap: "1rem" }}>
+                            <button
+                                onClick={() => navigate('/guards/add')}
+                                className="btn-add-supervisor"
+                                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+                            >
+                                <UserPlus size={18} />
+                                Add Guard
+                            </button>
+
+                            {/* Download Dropdown */}
+                            <div className="download-dropdown-container">
+                                <button
+                                    onClick={() => setIsDownloadOpen(!isDownloadOpen)}
+                                    className="btn-download"
+                                >
+                                    <Download size={18} />
+                                    Download as
+                                    <ChevronDown
+                                        size={14}
+                                        style={{ transform: isDownloadOpen ? 'rotate(180deg)' : 'none', transition: '0.2s' }}
+                                    />
+                                </button>
+
+                                {isDownloadOpen && (
+                                    <div className="dropdown-menu">
+                                        <button
+                                            onClick={() => handleDownload('pdf')}
+                                            className="dropdown-item"
+                                        >
+                                            PDF Document
+                                        </button>
+                                        <button
+                                            onClick={() => handleDownload('excel')}
+                                            className="dropdown-item"
+                                        >
+                                            Excel Spreadsheet
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    {/* Guards Table */}
+                    <Table
+                        columns={columns}
+                        data={guards}
+                        onRowClick={handleGuardClick}
+                        emptyMessage="No guards found in the system."
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default AllGuards;
+

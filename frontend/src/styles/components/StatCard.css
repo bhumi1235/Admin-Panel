@@ -1,0 +1,86 @@
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.stat-card.clickable {
+    cursor: pointer;
+}
+
+.stat-card.clickable:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.stat-card-info {
+    flex: 1;
+}
+
+.stat-card-title {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.stat-card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-trend {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.trend-up {
+    color: #10b981;
+}
+
+.trend-down {
+    color: #ef4444;
+}
+
+.stat-card-icon-container {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Color variations for icon background */
+.icon-bg-primary {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.icon-bg-secondary {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.icon-bg-success {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.icon-bg-warning {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.icon-bg-danger {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Icon colors are handled via props in the component for simplicity with Lucide icons */

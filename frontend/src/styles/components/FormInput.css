@@ -1,0 +1,52 @@
+.form-input-container {
+    margin-bottom: 1.25rem;
+}
+
+.form-input-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #374151;
+}
+
+.required-star {
+    color: #ef4444;
+}
+
+.form-input-field,
+.form-select-field,
+.form-textarea-field {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: all 0.15s ease;
+    background: white;
+}
+
+.form-input-field:focus,
+.form-select-field:focus,
+.form-textarea-field:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input-field.error,
+.form-select-field.error,
+.form-textarea-field.error {
+    border-color: #ef4444;
+}
+
+.form-textarea-field {
+    font-family: inherit;
+    resize: vertical;
+}
+
+.error-message {
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    color: #ef4444;
+}

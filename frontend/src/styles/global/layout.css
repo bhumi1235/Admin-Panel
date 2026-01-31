@@ -1,0 +1,41 @@
+.page-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.page-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
+    padding: 2rem;
+    background: #f9fafb;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}

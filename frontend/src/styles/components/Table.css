@@ -1,0 +1,84 @@
+.table-outer-container {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.table-empty {
+    background: white;
+    border-radius: 16px;
+    padding: 4rem 2rem;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.table-empty-message {
+    color: #9ca3af;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.custom-table thead tr {
+    background: linear-gradient(to bottom, #f9fafb 0%, #f3f4f6 100%);
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.custom-table th {
+    text-align: left;
+    padding: 1.125rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: transparent;
+}
+
+.custom-table .serial-col {
+    width: 70px;
+}
+
+.custom-table tbody tr {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-table tbody tr.row-even {
+    background: #ffffff;
+}
+
+.custom-table tbody tr.row-odd {
+    background: #fafbfc;
+}
+
+.custom-table tbody tr.clickable {
+    cursor: pointer;
+}
+
+.custom-table tbody tr:hover {
+    background: #f0f9ff !important;
+    transform: scale(1.001);
+    box-shadow: inset 0 0 0 1px #e0f2fe;
+}
+
+.custom-table td {
+    padding: 1.25rem 1.25rem;
+    font-size: 0.875rem;
+    color: #374151;
+    vertical-align: middle;
+    line-height: 1.5;
+}
+
+.custom-table .serial-cell {
+    color: #9ca3af;
+    font-weight: 600;
+}
