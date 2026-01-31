@@ -15,9 +15,9 @@ function Sidebar() {
         return location.pathname === path || location.pathname.startsWith(path + '/');
     };
 
-    const isSubActive = (path, status) => {
+    const isSubActive = (path, formattedStatus) => {
         const queryParams = new URLSearchParams(location.search);
-        return location.pathname === path && queryParams.get('status') === status;
+        return location.pathname === path && queryParams.get('status') === formattedStatus;
     };
 
     const handleLogout = () => {
@@ -100,26 +100,6 @@ function Sidebar() {
                     <span>All Guards</span>
                 </Link>
 
-                {/* Quick Actions */}
-                <div className="sidebar-group-label" style={{ padding: '1rem 1.25rem 0.5rem', fontSize: '0.75rem', opacity: 0.6, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Quick Actions
-                </div>
-
-                <Link
-                    to="/supervisors/add"
-                    className={`sidebar-item ${isActive("/supervisors/add") ? "active" : ""}`}
-                >
-                    <UserPlus size={22} strokeWidth={isActive("/supervisors/add") ? 2.5 : 2} />
-                    <span>Add Supervisor</span>
-                </Link>
-
-                <Link
-                    to="/guards/add"
-                    className={`sidebar-item ${isActive("/guards/add") ? "active" : ""}`}
-                >
-                    <ShieldCheck size={22} strokeWidth={isActive("/guards/add") ? 2.5 : 2} />
-                    <span>Add Guard</span>
-                </Link>
             </nav>
 
             {/* Footer */}

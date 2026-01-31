@@ -7,7 +7,6 @@ import SupervisorDetails from "../pages/SupervisorDetails";
 import Guards from "../pages/Guards";
 import AllGuards from "../pages/AllGuards";
 import GuardDetails from "../pages/GuardDetails";
-import AddGuard from "../pages/AddGuard";
 import ResetData from "../pages/ResetData";
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -24,7 +23,6 @@ function AppRoutes() {
                 <Route path="/supervisors/:id" element={<SupervisorDetails />} />
                 <Route path="/supervisors/:id/guards" element={<Guards />} />
                 <Route path="/guards" element={<AllGuards />} />
-                <Route path="/guards/add" element={<AddGuard />} />
                 <Route path="/guards/:id" element={<GuardDetails />} />
                 <Route path="/all-guards" element={<AllGuards />} />
             </Route>
