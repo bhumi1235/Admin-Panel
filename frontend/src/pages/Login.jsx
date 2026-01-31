@@ -38,7 +38,11 @@ function Login() {
             navigate("/dashboard");
         } catch (err) {
             console.error("Login failed:", err);
-            setError(err.response?.data?.message || "Invalid email or password");
+            if (!err.response) {
+                setError("Network Error: Unable to reach server. Please check your connection.");
+            } else {
+                setError(err.response?.data?.message || "Invalid email or password");
+            }
         } finally {
             setLoading(false);
         }

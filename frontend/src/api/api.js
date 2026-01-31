@@ -1,9 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "../config/config";
 
-console.log("🚀 DEBUG: Current API Base URL:", API_BASE_URL);
-console.log("🚀 DEBUG: Environment Mode:", import.meta.env.MODE);
-
 const api = axios.create({
     baseURL: API_BASE_URL
 });
@@ -30,6 +27,11 @@ api.interceptors.response.use(
             localStorage.removeItem("token");
             window.location.href = "/";
         }
+        console.error("API Error encountered:", {
+            message: error.message,
+            url: error.config?.url,
+            status: error.response?.status
+        });
         return Promise.reject(error);
     }
 );
