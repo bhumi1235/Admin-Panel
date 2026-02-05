@@ -113,36 +113,51 @@ function GuardDetails() {
                         {fromSupervisorId ? "Back to Supervisor's Guards" : "Back to All Guards"}
                     </button>
 
-                    {/* Header Card */}
-                    <div className="details-header-card">
-                        <div className="details-header-content">
-                            <div className="avatar-circle">
-                                {(guard.name || "U G").split(" ").map((n) => n[0]).join("")}
-                            </div>
-                            <div className="details-title-section">
-                                <h1 className="details-main-title">
-                                    {guard.name || "—"}
-                                </h1>
-                                <p className="details-subtitle">
-                                    Security Guard • ID: {guard.id}
-                                </p>
-                                <div className={`status-badge-lg ${guard.status === "Active" ? "active" : "inactive"}`}>
-                                    <div className={`status-dot ${guard.status === "Active" ? "active" : "inactive"}`}></div>
-                                    {guard.status || "—"}
-                                </div>
-                            </div>
-                        </div>
+                    {/* Header */}
+                    <div style={{ marginBottom: "2rem" }}>
+                        <h1 style={{
+                            fontSize: "2rem",
+                            fontWeight: "700",
+                            color: "#111827",
+                            marginBottom: "0.5rem"
+                        }}>
+                            Guard Details
+                        </h1>
+                        <p style={{
+                            fontSize: "1rem",
+                            color: "#6b7280",
+                            margin: 0
+                        }}>
+                            View and manage security guard information
+                        </p>
                     </div>
 
                     {/* Information Grid */}
                     <div className="info-grid">
                         {/* Contact Information */}
                         <div className="info-card">
-                            <h2 className="info-card-title">
-                                <Phone size={20} />
-                                Contact Information
-                            </h2>
+                            <div style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "flex-start",
+                                marginBottom: "1.5rem"
+                            }}>
+                                <h2 className="info-card-title">
+                                    <Phone size={20} />
+                                    Contact Information
+                                </h2>
+                                <span className={`status-badge-sm ${guard.status === "Active" ? "active" : "inactive"}`}>
+                                    {guard.status || "—"}
+                                </span>
+                            </div>
                             <div className="info-items-container">
+                                <div>
+                                    <p className="info-item-label">Full Name</p>
+                                    <p className="info-item-text" style={{ fontWeight: "700", fontSize: "1.125rem" }}>
+                                        {guard.name || "—"}
+                                    </p>
+                                </div>
+
                                 <div>
                                     <p className="info-item-label">Email Address</p>
                                     <div className="info-item-value-box">
