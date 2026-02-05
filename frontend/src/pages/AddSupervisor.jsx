@@ -72,7 +72,7 @@ function AddSupervisor() {
             setLoading(true);
 
             await api.post(
-                `/api/supervisors`,
+                `/api/admin/supervisors`,
                 {
                     fullName: formData.fullName,
                     email: formData.email,
