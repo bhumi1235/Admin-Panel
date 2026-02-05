@@ -16,17 +16,13 @@ export const protect = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback_secret");
 
             // Get user from token
-            // Check admins/users table first
-            let userRes = await query("SELECT id, email, name, role, created_at FROM users WHERE id = $1", [decoded.id]);
-
+            // Check in all tables
+            let userRes = await query("SELECT id, name, email, role, created_at FROM users WHERE id = $1", [decoded.id]);
             if (userRes.rowCount === 0) {
-                // Check supervisors table
-                userRes = await query("SELECT id, email, full_name as name, role, created_at FROM supervisors WHERE id = $1", [decoded.id]);
+                userRes = await query("SELECT id, full_name as name, email, role, created_at FROM supervisors WHERE id = $1", [decoded.id]);
             }
-
             if (userRes.rowCount === 0) {
-                // Check guards table
-                userRes = await query("SELECT id, email, full_name as name, role, created_at FROM guards WHERE id = $1", [decoded.id]);
+                userRes = await query("SELECT id, full_name as name, email, role, created_at FROM guards WHERE id = $1", [decoded.id]);
             }
 
             if (userRes.rowCount === 0) {
