@@ -42,6 +42,9 @@ router.get("/dashboard", dashboardController.getStats);
 router.get("/supervisors", supervisorController.getAll);
 router.post("/supervisors", supervisorController.create);
 router.get("/supervisors/:id", supervisorController.getById);
+router.put("/supervisors/:id", supervisorController.update);
+router.put("/supervisors/:id/status", supervisorController.updateStatus);
+router.delete("/supervisors/:id", supervisorController.remove);
 router.get("/supervisors/:id/guards", supervisorController.getGuardsBySupervisorId);
 // Note: PUT/DELETE for supervisors might need to stay or be aliased; 
 // fitting them into this structure implies /api/admin/supervisors/:id

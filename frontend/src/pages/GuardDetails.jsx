@@ -37,7 +37,7 @@ function GuardDetails() {
                 setGuard(formattedGuard);
 
                 if (g.supervisorId) {
-                    const supRes = await api.get(`/api/supervisors/${g.supervisorId}`);
+                    const supRes = await api.get(`/api/admin/supervisors/${g.supervisorId}`);
                     const s = supRes.data;
 
                     setSupervisor({

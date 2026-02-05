@@ -56,7 +56,7 @@ function SupervisorDetails() {
     const handleSupervisorStatusToggle = async () => {
         try {
             const newStatus = supervisor.status === "Active" ? "Inactive" : "Active";
-            await api.put(`/api/supervisors/${id}/status`, {
+            await api.put(`/api/admin/supervisors/${id}/status`, {
                 status: newStatus
             });
             setSupervisor({ ...supervisor, status: newStatus });

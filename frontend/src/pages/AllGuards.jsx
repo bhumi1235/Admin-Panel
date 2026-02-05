@@ -39,7 +39,7 @@ function AllGuards() {
                 setGuards(formattedGuards);
 
                 // supervisors
-                const supRes = await api.get(`/api/supervisors`);
+                const supRes = await api.get(`/api/admin/supervisors`);
                 const s = supRes.data;
 
                 const formattedSup = s.map(sp => ({

@@ -99,11 +99,11 @@ function Supervisors() {
                             onClick={async (e) => {
                                 e.stopPropagation();
                                 try {
-                                    await api.put(`/api/supervisors/${row.id}/status`, {
+                                    await api.put(`/api/admin/supervisors/${row.id}/status`, {
                                         status: "Active"
                                     });
                                     // Refresh the list
-                                    const res = await api.get(`/api/supervisors`);
+                                    const res = await api.get(`/api/admin/supervisors`);
                                     setSupervisors(res.data.filter(s => s.status === statusFilter));
                                 } catch (err) {
                                     console.error("Failed to activate supervisor:", err);
@@ -121,12 +121,12 @@ function Supervisors() {
                                 e.stopPropagation();
                                 if (window.confirm(`Are you sure you want to suspend ${row.fullName}?`)) {
                                     try {
-                                        await api.put(`/api/supervisors/${row.id}/status`, {
+                                        await api.put(`/api/admin/supervisors/${row.id}/status`, {
                                             status: "Suspended"
                                         });
                                         alert(`${row.fullName} cant log in on the app`);
                                         // Refresh the list
-                                        const res = await api.get(`/api/supervisors`);
+                                        const res = await api.get(`/api/admin/supervisors`);
                                         setSupervisors(res.data.filter(s => s.status === statusFilter));
                                     } catch (err) {
                                         console.error("Failed to suspend supervisor:", err);
@@ -147,9 +147,9 @@ function Supervisors() {
                                 e.stopPropagation();
                                 if (window.confirm(`Are you sure you want to terminate ${row.fullName}?`)) {
                                     try {
-                                        await api.delete(`/api/supervisors/${row.id}`);
+                                        await api.delete(`/api/admin/supervisors/${row.id}`);
                                         // Refresh the list
-                                        const res = await api.get(`/api/supervisors`);
+                                        const res = await api.get(`/api/admin/supervisors`);
                                         setSupervisors(res.data.filter(s => s.status === statusFilter));
                                     } catch (err) {
                                         console.error("Failed to terminate supervisor:", err);
