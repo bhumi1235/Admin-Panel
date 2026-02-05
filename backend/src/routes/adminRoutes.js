@@ -40,7 +40,9 @@ router.get("/dashboard", dashboardController.getStats);
 
 // Supervisor Management
 router.get("/supervisors", supervisorController.getAll);
-router.post("/supervisors", supervisorController.create); // If needed under admin/supervisors
+router.post("/supervisors", supervisorController.create);
+router.get("/supervisors/:id", supervisorController.getById);
+router.get("/supervisors/:id/guards", supervisorController.getGuardsBySupervisorId);
 // Note: PUT/DELETE for supervisors might need to stay or be aliased; 
 // fitting them into this structure implies /api/admin/supervisors/:id
 
