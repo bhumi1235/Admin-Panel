@@ -18,7 +18,7 @@ function Dashboard() {
 
     const fetchDashboard = async () => {
         try {
-            const res = await api.get(`/api/dashboard`);
+            const res = await api.get(`/api/admin/dashboard`);
 
             setStats({
                 totalSupervisors: res.data.totalSupervisors,

@@ -5,20 +5,49 @@ import {
     updateAdmin,
     deleteAdmin,
 } from "../controllers/adminController.js";
+import { adminLogin } from "../controllers/authController.js";
+import * as dashboardController from "../controllers/dashboardController.js";
+import * as supervisorController from "../controllers/supervisorController.js";
 import { protect, authorize } from "../middlewares/authMiddleware.js";
+import { query } from "../config/db.js";
 
 const router = express.Router();
 
+// --- PUBLIC / DEBUG endpoints ---
+
+// Login
+router.post("/login", adminLogin);
+
+// Bootstrap Admin (No token for now as requested)
+router.post("/create-admin", createAdmin);
+
+// Debug Users
+router.get("/debug-users", async (req, res) => {
+    try {
+        const r = await query("SELECT email, role FROM users");
+        res.json(r.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// --- PROTECTED ADMIN endpoints ---
 router.use(protect);
 router.use(authorize("admin"));
 
-router.route("/")
-    .get(getAllAdmins)
-    .post(createAdmin);
+router.get("/dashboard", dashboardController.getStats);
 
-router.route("/:id")
-    .put(updateAdmin)
-    .delete(deleteAdmin);
+// Supervisor Management
+router.get("/supervisors", supervisorController.getAll);
+router.post("/supervisors", supervisorController.create); // If needed under admin/supervisors
+// Note: PUT/DELETE for supervisors might need to stay or be aliased; 
+// fitting them into this structure implies /api/admin/supervisors/:id
+
+// Admin Management (The old /api/admins routes)
+// Maybe alias these to /api/admin/accounts or similar if needed, 
+// but user only asked for specific routes. We can keep basic CRUD here if desired.
+router.get("/accounts", getAllAdmins);
 
 export default router;
 

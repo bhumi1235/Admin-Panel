@@ -23,7 +23,7 @@ function Supervisors() {
     useEffect(() => {
         const fetchSupervisors = async () => {
             try {
-                const res = await api.get(`/api/supervisors`);
+                const res = await api.get(`/api/admin/supervisors`);
                 // Filter by status
                 const filtered = res.data.filter(s => s.status === statusFilter);
                 setSupervisors(filtered);

@@ -13,9 +13,9 @@ export const getAllAdmins = async (req, res) => {
     }
 };
 
-// @desc    Create new admin
-// @route   POST /api/admins
-// @access  Private/Admin
+// @desc    Create new admin (Bootstrap)
+// @route   POST /api/admin/create-admin
+// @access  Public (for now)
 export const createAdmin = async (req, res) => {
     const { name, email, password, role } = req.body;
 

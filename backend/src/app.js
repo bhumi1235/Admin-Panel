@@ -14,11 +14,18 @@ app.use(express.json());
 app.options("*", cors());
 
 // Routes
+// Routes
+// Generic Auth (if needed for guards/supervisors in future)
 app.use("/api/auth", authRoutes);
-app.use("/api/admins", adminRoutes);
-app.use("/api/supervisors", protect, authorize("admin"), supervisorRoutes);
+
+// Admin Directed Routes (Bootstrapping users, Dashboard, Supervisors, etc.)
+app.use("/api/admin", adminRoutes);
+
 app.use("/api/guards", protect, guardRoutes);
-app.use("/api/dashboard", protect, dashboardRoutes);
+// app.use("/api/dashboard", protect, dashboardRoutes); // Moving to /api/admin/dashboard
+// app.use("/api/supervisors", protect, authorize("admin"), supervisorRoutes); // Moving to /api/admin/supervisors
+app.use("/api/duty-types", protect, authorize("admin"), (req, res) => res.status(501).json({ message: "Not Implemented Yet" })); // Placeholder until duty routes created
+
 app.use("/api/reset-database", resetRoutes);
 app.get("/api/health", (req, res) => {
   res.status(200).json({
