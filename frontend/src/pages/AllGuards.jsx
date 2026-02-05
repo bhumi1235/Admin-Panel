@@ -25,22 +25,22 @@ function AllGuards() {
             try {
                 // guards
                 const guardsRes = await api.get(`/api/guards`);
-                const g = guardsRes.data;
+                const g = guardsRes.data.data;
 
                 const formattedGuards = g.map(guard => ({
                     id: guard.id,
                     name: guard.fullName,
                     phone: guard.phone,
                     assignedArea: guard.assignedArea,
-                    supervisorId: guard.supervisorId,
-                    status: guard.status
+                    status: guard.status,
+                    supervisorId: guard.supervisorId
                 }));
 
                 setGuards(formattedGuards);
 
                 // supervisors
                 const supRes = await api.get(`/api/admin/supervisors`);
-                const s = supRes.data;
+                const s = supRes.data.data;
 
                 const formattedSup = s.map(sp => ({
                     id: sp.id,
@@ -145,16 +145,15 @@ function AllGuards() {
                                 await api.delete(`/api/guards/${row.id}`);
                                 // Refresh the list
                                 const guardsRes = await api.get(`/api/guards`);
-                                const g = guardsRes.data;
-                                const formattedGuards = g.map(guard => ({
+                                const updatedGuards = guardsRes.data.data.map(guard => ({
                                     id: guard.id,
                                     name: guard.fullName,
                                     phone: guard.phone,
                                     assignedArea: guard.assignedArea,
-                                    supervisorId: guard.supervisorId,
-                                    status: guard.status
+                                    status: guard.status,
+                                    supervisorId: guard.supervisorId
                                 }));
-                                setGuards(formattedGuards);
+                                setGuards(updatedGuards);
                             } catch (err) {
                                 console.error("Failed to delete guard:", err);
                                 alert("Failed to delete guard. Please try again.");

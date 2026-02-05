@@ -19,7 +19,7 @@ function GuardDetails() {
         const fetchGuard = async () => {
             try {
                 const res = await api.get(`/api/guards/${id}`);
-                const g = res.data;
+                const g = res.data.data;
 
                 const formattedGuard = {
                     id: g.id,
@@ -38,7 +38,7 @@ function GuardDetails() {
 
                 if (g.supervisorId) {
                     const supRes = await api.get(`/api/admin/supervisors/${g.supervisorId}`);
-                    const s = supRes.data;
+                    const s = supRes.data.data;
 
                     setSupervisor({
                         id: s.id,

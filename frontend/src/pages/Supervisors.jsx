@@ -25,7 +25,7 @@ function Supervisors() {
             try {
                 const res = await api.get(`/api/admin/supervisors`);
                 // Filter by status
-                const filtered = res.data.filter(s => s.status === statusFilter);
+                const filtered = res.data.data.filter(s => s.status === statusFilter);
                 setSupervisors(filtered);
             } catch (err) {
                 console.error("Failed to load supervisors:", err);
@@ -104,7 +104,7 @@ function Supervisors() {
                                     });
                                     // Refresh the list
                                     const res = await api.get(`/api/admin/supervisors`);
-                                    setSupervisors(res.data.filter(s => s.status === statusFilter));
+                                    setSupervisors(res.data.data.filter(s => s.status === statusFilter));
                                 } catch (err) {
                                     console.error("Failed to activate supervisor:", err);
                                 }
@@ -127,7 +127,7 @@ function Supervisors() {
                                         alert(`${row.fullName} cant log in on the app`);
                                         // Refresh the list
                                         const res = await api.get(`/api/admin/supervisors`);
-                                        setSupervisors(res.data.filter(s => s.status === statusFilter));
+                                        setSupervisors(res.data.data.filter(s => s.status === statusFilter));
                                     } catch (err) {
                                         console.error("Failed to suspend supervisor:", err);
                                         alert("Failed to suspend supervisor. Please try again.");
@@ -150,7 +150,7 @@ function Supervisors() {
                                         await api.delete(`/api/admin/supervisors/${row.id}`);
                                         // Refresh the list
                                         const res = await api.get(`/api/admin/supervisors`);
-                                        setSupervisors(res.data.filter(s => s.status === statusFilter));
+                                        setSupervisors(res.data.data.filter(s => s.status === statusFilter));
                                     } catch (err) {
                                         console.error("Failed to terminate supervisor:", err);
                                         alert("Failed to terminate supervisor. Please try again.");

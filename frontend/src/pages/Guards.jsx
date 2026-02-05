@@ -27,7 +27,7 @@ function Guards() {
             // supervisor details
             const supRes = await api.get(`/api/admin/supervisors/${id}`);
 
-            const sup = supRes.data;
+            const sup = supRes.data.data;
             setSupervisor({
                 id: sup.id,
                 fullName: sup.full_name,
@@ -39,7 +39,7 @@ function Guards() {
             // guards under this supervisor
             const guardRes = await api.get(`/api/admin/supervisors/${id}/guards`);
 
-            const formattedGuards = guardRes.data.map(g => ({
+            const formattedGuards = guardRes.data.data.map(g => ({
                 id: g.id,
                 name: g.fullName,
                 phone: g.phone,

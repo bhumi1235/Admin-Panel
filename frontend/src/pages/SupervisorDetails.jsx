@@ -20,7 +20,7 @@ function SupervisorDetails() {
             try {
                 // supervisor
                 const supRes = await api.get(`/api/admin/supervisors/${id}`);
-                const s = supRes.data;
+                const s = supRes.data.data;
 
                 setSupervisor({
                     id: s.id,
@@ -33,7 +33,7 @@ function SupervisorDetails() {
 
                 // guards
                 const guardsRes = await api.get(`/api/admin/supervisors/${id}/guards`);
-                const formattedGuards = guardsRes.data.map(g => ({
+                const formattedGuards = guardsRes.data.data.map(g => ({
                     id: g.id,
                     name: g.fullName,
                     phone: g.phone,
@@ -42,7 +42,7 @@ function SupervisorDetails() {
                 }));
 
                 setGuards(formattedGuards);
-                setGuardsCount(guardsRes.data.length);
+                setGuardsCount(guardsRes.data.data.length);
 
             } catch (err) {
                 console.error("Failed to load supervisor/guards:", err);
