@@ -29,12 +29,14 @@ function ProfileModal({ isOpen, onClose }) {
                     console.log('res.data.data:', res.data?.data);
                     console.log('res.data.data.userData:', res.data?.data?.userData);
 
-                    // The response structure is: res.data.data.userData
-                    if (res.data?.data?.userData) {
-                        setUser(res.data.data.userData);
-                        console.log('User set to:', res.data.data.userData);
+                    // Handle various response structures
+                    const userData = res.data.userData || res.data.data || res.data;
+
+                    if (userData) {
+                        setUser(userData);
+                        console.log('User set to:', userData);
                     } else {
-                        console.log('userData not found in expected path');
+                        console.log('User data not found in response');
                     }
                 } catch (err) {
                     console.error('Failed to fetch profile:', err);
