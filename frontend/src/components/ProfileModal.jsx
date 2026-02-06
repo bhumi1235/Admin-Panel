@@ -97,8 +97,8 @@ function ProfileModal({ isOpen, onClose }) {
         setLoading(true);
         try {
             await api.put('/api/admin/change-password', {
-                currentPassword: formData.currentPassword,
-                newPassword: formData.newPassword
+                old_password: formData.currentPassword,
+                new_password: formData.newPassword
             });
             setSuccess('Password updated successfully!');
             setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
