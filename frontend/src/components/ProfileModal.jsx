@@ -24,9 +24,17 @@ function ProfileModal({ isOpen, onClose }) {
             if (isOpen) {
                 try {
                     const res = await api.get('/api/admin/profile');
+                    console.log('Full API Response:', res);
+                    console.log('res.data:', res.data);
+                    console.log('res.data.data:', res.data?.data);
+                    console.log('res.data.data.userData:', res.data?.data?.userData);
+
                     // The response structure is: res.data.data.userData
                     if (res.data?.data?.userData) {
                         setUser(res.data.data.userData);
+                        console.log('User set to:', res.data.data.userData);
+                    } else {
+                        console.log('userData not found in expected path');
                     }
                 } catch (err) {
                     console.error('Failed to fetch profile:', err);
