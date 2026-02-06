@@ -18,13 +18,26 @@ function ProfileModal({ isOpen, onClose }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    // Fetch fresh profile data when modal opens
+    const fetchProfile = async () => {
+        try {
+            const res = await api.get('/api/admin/profile');
+            setUser(res.data);
+        } catch (err) {
+            console.error('Failed to fetch profile:', err);
+        }
+    };
+
     useEffect(() => {
-        if (isOpen && user) {
-            setFormData(prev => ({
-                ...prev,
-                name: user.name || '',
-                email: user.email || ''
-            }));
+        if (isOpen) {
+            fetchProfile(); // Fetch fresh data when modal opens
+            if (user) {
+                setFormData(prev => ({
+                    ...prev,
+                    name: user.name || '',
+                    email: user.email || ''
+                }));
+            }
             setView('info');
             setError('');
             setSuccess('');
