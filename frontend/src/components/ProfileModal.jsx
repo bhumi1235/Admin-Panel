@@ -22,7 +22,13 @@ function ProfileModal({ isOpen, onClose }) {
     const fetchProfile = async () => {
         try {
             const res = await api.get('/api/admin/profile');
-            setUser(res.data);
+            // Handle nested response structure: res.data.data.userData
+            if (res.data?.data?.userData) {
+                setUser(res.data.data.userData);
+            } else {
+                // Fallback for direct response structure
+                setUser(res.data);
+            }
         } catch (err) {
             console.error('Failed to fetch profile:', err);
         }
@@ -45,6 +51,25 @@ function ProfileModal({ isOpen, onClose }) {
     }, [isOpen, user]);
 
     if (!isOpen) return null;
+
+    // Add this useEffect right after your existing useEffect
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (isOpen) {
+                try {
+                    const res = await api.get('/api/admin/profile');
+                    // The response structure is: res.data.data.userData
+                    if (res.data?.data?.userData) {
+                        setUser(res.data.data.userData);
+                    }
+                } catch (err) {
+                    console.error('Failed to fetch profile:', err);
+                }
+            }
+        };
+
+        fetchProfile();
+    }, [isOpen, setUser]);
 
     const adminName = user?.name || "User";
     const adminEmail = user?.email || "";
