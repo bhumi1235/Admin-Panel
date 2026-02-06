@@ -24,12 +24,9 @@ function ProfileModal({ isOpen, onClose }) {
             if (isOpen) {
                 try {
                     const res = await api.get('/api/admin/profile');
-                    // Handle nested response structure: res.data.data.userData
+                    // The response structure is: res.data.data.userData
                     if (res.data?.data?.userData) {
                         setUser(res.data.data.userData);
-                    } else {
-                        // Fallback for direct response structure
-                        setUser(res.data);
                     }
                 } catch (err) {
                     console.error('Failed to fetch profile:', err);
