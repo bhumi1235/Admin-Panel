@@ -66,7 +66,7 @@ function ProfileModal({ isOpen, onClose }) {
 
         setLoading(true);
         try {
-            await api.put('/api/auth/change-password', {
+            await api.put('/api/admin/change-password', {
                 currentPassword: formData.currentPassword,
                 newPassword: formData.newPassword
             });
@@ -87,7 +87,7 @@ function ProfileModal({ isOpen, onClose }) {
 
         setLoading(true);
         try {
-            const res = await api.put('/api/auth/profile', {
+            const res = await api.put('/api/admin/profile', {
                 name: formData.name,
                 email: formData.email
             });

@@ -13,7 +13,6 @@ function Dashboard() {
         totalSupervisors: 0,
         activeSupervisors: 0,
         totalGuards: 0,
-        activeGuards: 0
     });
 
     const fetchDashboard = async () => {
@@ -24,7 +23,6 @@ function Dashboard() {
                 totalSupervisors: res.data.totalSupervisors,
                 activeSupervisors: res.data.activeSupervisors,
                 totalGuards: res.data.totalGuards,
-                activeGuards: res.data.activeGuards
             });
 
         } catch (err) {

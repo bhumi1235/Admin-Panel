@@ -4,6 +4,9 @@ import {
     createAdmin,
     updateAdmin,
     deleteAdmin,
+    getAdminProfile,
+    updateAdminProfile,
+    changeAdminPassword,
 } from "../controllers/adminController.js";
 import { adminLogin } from "../controllers/authController.js";
 import * as dashboardController from "../controllers/dashboardController.js";
@@ -35,6 +38,11 @@ router.get("/debug-users", async (req, res) => {
 // --- PROTECTED ADMIN endpoints ---
 router.use(protect);
 router.use(authorize("admin"));
+
+// Admin Profile Management
+router.get("/profile", getAdminProfile);
+router.put("/profile", updateAdminProfile);
+router.put("/change-password", changeAdminPassword);
 
 router.get("/dashboard", dashboardController.getStats);
 

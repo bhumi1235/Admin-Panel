@@ -87,3 +87,92 @@ export const deleteAdmin = async (req, res) => {
     }
 };
 
+// @desc    Get admin profile
+// @route   GET /api/admin/profile
+// @access  Private/Admin
+export const getAdminProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const result = await query(
+            "SELECT id, name, email, role, created_at FROM users WHERE id = $1",
+            [userId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update admin profile
+// @route   PUT /api/admin/profile
+// @access  Private/Admin
+export const updateAdminProfile = async (req, res) => {
+    const { name, email } = req.body;
+    const userId = req.user.id;
+
+    try {
+        // Check if email is already taken by another admin
+        if (email && email !== req.user.email) {
+            const emailExists = await query(
+                "SELECT 1 FROM users WHERE email = $1 AND id != $2",
+                [email, userId]
+            );
+
+            if (emailExists.rowCount > 0) {
+                return res.status(400).json({ message: "Email already in use" });
+            }
+        }
+
+        // Update admin profile
+        const result = await query(
+            "UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING id, name, email, role, created_at",
+            [name || req.user.name, email || req.user.email, userId]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Change admin password
+// @route   PUT /api/admin/change-password
+// @access  Private/Admin
+export const changeAdminPassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    try {
+        // Get current admin
+        const userRes = await query("SELECT * FROM users WHERE id = $1", [userId]);
+
+        if (userRes.rowCount === 0) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        const user = userRes.rows[0];
+
+        // Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Incorrect current password" });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        await query("UPDATE users SET password = $1 WHERE id = $2", [hashedPassword, userId]);
+
+        res.json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
