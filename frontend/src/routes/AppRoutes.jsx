@@ -8,6 +8,7 @@ import Guards from "../pages/Guards";
 import AllGuards from "../pages/AllGuards";
 import GuardDetails from "../pages/GuardDetails";
 import ResetData from "../pages/ResetData";
+import ProtectedRoute from "../components/ProtectedRoute";
 import DutyTypes from "../pages/DutyTypes";
 import AddDutyType from "../pages/AddDutyType";
 import EditDutyType from "../pages/EditDutyType";
