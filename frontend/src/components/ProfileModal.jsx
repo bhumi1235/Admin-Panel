@@ -19,48 +19,17 @@ function ProfileModal({ isOpen, onClose }) {
     const [success, setSuccess] = useState('');
 
     // Fetch fresh profile data when modal opens
-    const fetchProfile = async () => {
-        try {
-            const res = await api.get('/api/admin/profile');
-            // Handle nested response structure: res.data.data.userData
-            if (res.data?.data?.userData) {
-                setUser(res.data.data.userData);
-            } else {
-                // Fallback for direct response structure
-                setUser(res.data);
-            }
-        } catch (err) {
-            console.error('Failed to fetch profile:', err);
-        }
-    };
-
-    useEffect(() => {
-        if (isOpen) {
-            fetchProfile(); // Fetch fresh data when modal opens
-            if (user) {
-                setFormData(prev => ({
-                    ...prev,
-                    name: user.name || '',
-                    email: user.email || ''
-                }));
-            }
-            setView('info');
-            setError('');
-            setSuccess('');
-        }
-    }, [isOpen, user]);
-
-    if (!isOpen) return null;
-
-    // Add this useEffect right after your existing useEffect
     useEffect(() => {
         const fetchProfile = async () => {
             if (isOpen) {
                 try {
                     const res = await api.get('/api/admin/profile');
-                    // The response structure is: res.data.data.userData
+                    // Handle nested response structure: res.data.data.userData
                     if (res.data?.data?.userData) {
                         setUser(res.data.data.userData);
+                    } else {
+                        // Fallback for direct response structure
+                        setUser(res.data);
                     }
                 } catch (err) {
                     console.error('Failed to fetch profile:', err);
@@ -68,8 +37,26 @@ function ProfileModal({ isOpen, onClose }) {
             }
         };
 
-        fetchProfile();
+        if (isOpen) {
+            fetchProfile();
+            setView('info');
+            setError('');
+            setSuccess('');
+        }
     }, [isOpen, setUser]);
+
+    // Update form data when user changes
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                name: user.name || '',
+                email: user.email || ''
+            }));
+        }
+    }, [user]);
+
+    if (!isOpen) return null;
 
     const adminName = user?.name || "User";
     const adminEmail = user?.email || "";
