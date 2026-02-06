@@ -63,11 +63,11 @@ function Login() {
                     <div className="login-logo-container">
                         <img
                             src="/logo.png"
-                            alt="SecureGuard Logo"
+                            alt="Smart Rangers Logo"
                             className="login-logo-img"
                         />
                     </div>
-                    <h2 className="login-title">SecureGuard</h2>
+                    <h2 className="login-title">Smart Rangers</h2>
                     <p className="login-subtitle">Admin Panel Login</p>
                 </div>
 

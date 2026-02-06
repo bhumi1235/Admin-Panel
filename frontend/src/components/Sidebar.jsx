@@ -47,7 +47,7 @@ function Sidebar() {
                             />
                         </div>
                         <div className="sidebar-logo-text">
-                            <h2>SecureGuard</h2>
+                            <h2>Smart Rangers</h2>
                             <p>Admin Panel</p>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ function Sidebar() {
                     Logout
                 </button>
                 <p className="sidebar-footer-text">
-                    © 2024 SecureGuard
+                    © 2024 Smart Rangers
                 </p>
             </div>
         </aside >
