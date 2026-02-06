@@ -8,7 +8,9 @@ import Guards from "../pages/Guards";
 import AllGuards from "../pages/AllGuards";
 import GuardDetails from "../pages/GuardDetails";
 import ResetData from "../pages/ResetData";
-import ProtectedRoute from "../components/ProtectedRoute";
+import DutyTypes from "../pages/DutyTypes";
+import AddDutyType from "../pages/AddDutyType";
+import EditDutyType from "../pages/EditDutyType";
 
 function AppRoutes() {
     return (
@@ -25,6 +27,11 @@ function AppRoutes() {
                 <Route path="/guards" element={<AllGuards />} />
                 <Route path="/guards/:id" element={<GuardDetails />} />
                 <Route path="/all-guards" element={<AllGuards />} />
+
+                {/* Duty Types Routes */}
+                <Route path="/duty-types" element={<DutyTypes />} />
+                <Route path="/duty-types/add" element={<AddDutyType />} />
+                <Route path="/duty-types/edit/:id" element={<EditDutyType />} />
             </Route>
 
             <Route path="/reset" element={<ResetData />} />

@@ -100,6 +100,15 @@ function Sidebar() {
                     <span>All Guards</span>
                 </Link>
 
+                {/* Duty Types */}
+                <Link
+                    to="/duty-types"
+                    className={`sidebar-item ${isActive("/duty-types") ? "active" : ""}`}
+                >
+                    <Calendar size={22} strokeWidth={isActive("/duty-types") ? 2.5 : 2} />
+                    <span>Duty Types</span>
+                </Link>
+
             </nav>
 
             {/* Footer */}
