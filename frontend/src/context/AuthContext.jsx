@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
                     const res = await axios.get(`${API_BASE_URL}/api/admin/profile`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
-                    setUser(res.data);
+                    // Extract userData from response
+                    setUser(res.data.userData || res.data);
                 } catch (err) {
                     console.error("Session expired or invalid token");
                     localStorage.removeItem("token");
