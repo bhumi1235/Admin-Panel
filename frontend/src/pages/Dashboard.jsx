@@ -63,13 +63,7 @@ function Dashboard() {
                             color="primary"
                             onClick={() => navigate('/supervisors?status=Active')}
                         />
-                        <StatCard
-                            icon={UserCheck}
-                            title="Active Supervisors"
-                            value={stats.activeSupervisors}
-                            color="success"
-                            onClick={() => navigate('/supervisors?status=Active')}
-                        />
+
                         <StatCard
                             icon={Shield}
                             title="Total Guards"
