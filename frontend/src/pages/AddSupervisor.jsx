@@ -71,22 +71,32 @@ function AddSupervisor() {
         try {
             setLoading(true);
 
-            await api.post(
+            const response = await api.post(
                 `/api/admin/supervisors`,
                 {
-                    fullName: formData.fullName,
+                    name: formData.fullName,  // Backend expects 'name', not 'fullName'
                     email: formData.email,
                     phone: formData.phone,
-                    password: formData.password,
-                    status: formData.status
+                    password: formData.password
+                    // Note: status is set to 'Active' by default in backend
                 }
             );
 
+            console.log('Supervisor created:', response.data);
+
+            // Show success message if available
+            if (response.data?.message) {
+                alert(response.data.message);
+            }
 
             navigate("/supervisors");
         } catch (err) {
             console.error("Failed to add supervisor:", err);
-            alert("Failed to add supervisor");
+            console.error("Error response:", err.response);
+
+            // Show specific error message from backend
+            const errorMessage = err.response?.data?.message || "Failed to add supervisor";
+            alert(errorMessage);
         } finally {
             setLoading(false);
         }

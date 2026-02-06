@@ -94,16 +94,24 @@ function ProfileModal({ isOpen, onClose }) {
             return setError('Password must be at least 6 characters');
         }
 
+        const payload = {
+            old_password: formData.currentPassword,
+            new_password: formData.newPassword
+        };
+
+        console.log('Password change payload:', payload);
+        console.log('Form data:', formData);
+
         setLoading(true);
         try {
-            await api.put('/api/admin/change-password', {
-                old_password: formData.currentPassword,
-                new_password: formData.newPassword
-            });
+            const response = await api.put('/api/admin/change-password', payload);
+            console.log('Password change response:', response);
             setSuccess('Password updated successfully!');
             setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
             setTimeout(() => setView('info'), 2000);
         } catch (err) {
+            console.error('Password change error:', err);
+            console.error('Error response:', err.response);
             setError(err.response?.data?.message || 'Failed to update password');
         } finally {
             setLoading(false);
