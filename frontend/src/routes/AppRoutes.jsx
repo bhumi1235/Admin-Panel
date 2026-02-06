@@ -12,7 +12,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import DutyTypes from "../pages/DutyTypes";
 import AddDutyType from "../pages/AddDutyType";
 import EditDutyType from "../pages/EditDutyType";
-import ProtectedRoute from "../components/ProtectedRoute";
+
 
 function AppRoutes() {
     return (

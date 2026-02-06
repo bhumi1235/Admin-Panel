@@ -15,11 +15,6 @@ export const IncidentProvider = ({ children }) => {
     const [incidents, setIncidents] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Load incidents on mount
-    useEffect(() => {
-        loadIncidents();
-    }, []);
-
     const loadIncidents = useCallback(() => {
         setLoading(true);
         incidentService.initializeSampleData();
@@ -27,6 +22,11 @@ export const IncidentProvider = ({ children }) => {
         setIncidents(data);
         setLoading(false);
     }, []);
+
+    // Load incidents on mount
+    useEffect(() => {
+        loadIncidents();
+    }, [loadIncidents]);
 
     const createIncident = useCallback((incidentData) => {
         const newIncident = incidentService.createIncident(incidentData);

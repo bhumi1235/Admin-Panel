@@ -18,8 +18,8 @@ export const AuthProvider = ({ children }) => {
                     });
                     // Extract userData from response
                     setUser(res.data.userData || res.data);
-                } catch (err) {
-                    console.error("Session expired or invalid token");
+                } catch (error) {
+                    console.error("Session expired or invalid token", error);
                     localStorage.removeItem("token");
                     setUser(null);
                 }

@@ -14,30 +14,34 @@ function DutyTypes() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const fetchDutyTypes = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get(`/api/duty-types`);
+                console.log('Duty types response:', res.data);
+                // Handle different response structures (backend sends duty_types)
+                const data = res.data.duty_types || res.data.dutyTypes || res.data.data || res.data || [];
+                setDutyTypes(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.error("Failed to load duty types:", err);
+                setDutyTypes([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchDutyTypes();
     }, []);
-
-    const fetchDutyTypes = async () => {
-        try {
-            setLoading(true);
-            const res = await api.get(`/api/duty-types`);
-            console.log('Duty types response:', res.data);
-            // Handle different response structures
-            const data = res.data.dutyTypes || res.data.data || res.data || [];
-            setDutyTypes(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error("Failed to load duty types:", err);
-            setDutyTypes([]);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleDelete = async (id, name) => {
         if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
             try {
                 await api.delete(`/api/duty-types/${id}`);
-                fetchDutyTypes(); // Refresh the list
+                // Refresh logic - need to re-fetch. Since fetchDutyTypes is now inside useEffect, 
+                // we can either move it out (with useCallback) or just reload window, 
+                // OR better: trigger a state change to re-run effect.
+                // Let's use a simpler approach: remove from state.
+                setDutyTypes(prev => prev.filter(dt => dt.id !== id));
             } catch (err) {
                 console.error("Failed to delete duty type:", err);
                 alert("Failed to delete duty type. Please try again.");

@@ -18,10 +18,6 @@ function Guards() {
     const [guards, setGuards] = useState([]);
     const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
-    useEffect(() => {
-        fetchSupervisorAndGuards();
-    }, [id, navigate]);
-
     const fetchSupervisorAndGuards = async () => {
         try {
             // supervisor details
@@ -54,6 +50,10 @@ function Guards() {
             setSupervisor({ fullName: "Error loading data" }); // Fallback
         }
     };
+
+    useEffect(() => {
+        fetchSupervisorAndGuards();
+    }, [id, navigate]);
 
 
     const columns = [

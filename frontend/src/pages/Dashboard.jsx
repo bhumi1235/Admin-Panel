@@ -15,23 +15,22 @@ function Dashboard() {
         totalGuards: 0,
     });
 
-    const fetchDashboard = async () => {
-        try {
-            const res = await api.get(`/api/admin/dashboard`);
-
-            setStats({
-                totalSupervisors: res.data.totalSupervisors,
-                activeSupervisors: res.data.activeSupervisors,
-                totalGuards: res.data.totalGuards,
-            });
-
-        } catch (err) {
-            console.error("Failed to load dashboard:", err);
-        }
-    };
-
-
     useEffect(() => {
+        const fetchDashboard = async () => {
+            try {
+                const res = await api.get(`/api/admin/dashboard`);
+
+                setStats({
+                    totalSupervisors: res.data.totalSupervisors,
+                    activeSupervisors: res.data.activeSupervisors,
+                    totalGuards: res.data.totalGuards,
+                });
+
+            } catch (err) {
+                console.error("Failed to load dashboard:", err);
+            }
+        };
+
         fetchDashboard();
     }, []);
 

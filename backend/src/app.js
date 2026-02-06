@@ -6,25 +6,18 @@ import guardRoutes from "./routes/guardRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import resetRoutes from "./routes/resetRoutes.js";
-import { protect, authorize } from "./middlewares/authMiddleware.js";
+import dutyTypeRoutes from "./routes/dutyTypeRoutes.js";
 
-const app = express();
-app.use(cors()); // Default = Allow All Origins (Works best for Vercel->Railway)
-app.use(express.json());
-app.options("*", cors());
+// ... other imports
 
-// Routes
-// Routes
-// Generic Auth (if needed for guards/supervisors in future)
+// generic auth...
 app.use("/api/auth", authRoutes);
 
-// Admin Directed Routes (Bootstrapping users, Dashboard, Supervisors, etc.)
+// Admin Directed Routes
 app.use("/api/admin", adminRoutes);
 
 app.use("/api/guards", protect, guardRoutes);
-// app.use("/api/dashboard", protect, dashboardRoutes); // Moving to /api/admin/dashboard
-// app.use("/api/supervisors", protect, authorize("admin"), supervisorRoutes); // Moving to /api/admin/supervisors
-app.use("/api/duty-types", protect, authorize("admin"), (req, res) => res.status(501).json({ message: "Not Implemented Yet" })); // Placeholder until duty routes created
+app.use("/api/duty-types", protect, authorize("admin"), dutyTypeRoutes);
 
 app.use("/api/reset-database", resetRoutes);
 app.get("/api/health", (req, res) => {

@@ -13,11 +13,6 @@ function AllGuards() {
     const navigate = useNavigate();
     const [guards, setGuards] = useState([]);
     const [supervisors, setSupervisors] = useState([]);
-    const [stats, setStats] = useState({
-        total: 0,
-        assigned: 0,
-        unassigned: 0
-    });
     const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
     useEffect(() => {
@@ -48,14 +43,6 @@ function AllGuards() {
                 }));
 
                 setSupervisors(formattedSup);
-
-                // stats
-                const assigned = formattedGuards.filter(g => g.supervisorId).length;
-                setStats({
-                    total: formattedGuards.length,
-                    assigned: assigned,
-                    unassigned: formattedGuards.length - assigned
-                });
 
             } catch (err) {
                 console.error("Failed to load guards:", err);

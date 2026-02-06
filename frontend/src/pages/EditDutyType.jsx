@@ -23,7 +23,7 @@ function EditDutyType() {
         const fetchDutyType = async () => {
             try {
                 const res = await api.get(`/api/duty-types/${id}`);
-                const data = res.data.dutyType || res.data.data || res.data;
+                const data = res.data.duty_type || res.data.dutyType || res.data.data || res.data;
 
                 setFormData({
                     name: data.name || data.duty_type_name || "",
