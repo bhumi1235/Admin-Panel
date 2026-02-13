@@ -33,17 +33,25 @@ function AllGuards() {
 
                 setGuards(formattedGuards);
 
-                // supervisors
-                const supRes = await api.get(`/api/admin/supervisors`);
-                const s = supRes.data.data;
 
-                const formattedSup = s.map(sp => ({
+                // Fetch ALL supervisors (Active, Suspended, Terminated) for proper name lookup
+                // Guards may reference supervisors of any status
+                const [activeRes, suspendedRes, terminatedRes] = await Promise.all([
+                    api.get(`/api/admin/supervisors?status=Active`),
+                    api.get(`/api/admin/supervisors?status=Suspended`),
+                    api.get(`/api/admin/supervisors?status=Terminated`)
+                ]);
+
+                const allSupervisors = [
+                    ...activeRes.data.data,
+                    ...suspendedRes.data.data,
+                    ...terminatedRes.data.data
+                ];
+
+                const formattedSup = allSupervisors.map(sp => ({
                     id: sp.id,
                     fullName: sp.fullName
                 }));
-
-                console.log('Fetched supervisors:', formattedSup);
-                console.log('Sample guard with supervisorId:', formattedGuards[0]);
 
                 setSupervisors(formattedSup);
 
@@ -65,12 +73,6 @@ function AllGuards() {
         // Handle both string and number IDs
         const supervisor = supervisors.find(s => s.id == supervisorId); // Use == for type coercion
         const result = supervisor ? supervisor.fullName : 'Unassigned';
-
-        // Debug log for troubleshooting
-        if (!supervisor && supervisorId) {
-            console.log(`No supervisor found for ID: ${supervisorId} (type: ${typeof supervisorId})`);
-            console.log('Available supervisor IDs:', supervisors.map(s => `${s.id} (${typeof s.id})`));
-        }
 
         return result;
     };
