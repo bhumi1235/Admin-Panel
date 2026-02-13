@@ -28,29 +28,42 @@ function AllGuards() {
                     phone: guard.phone,
                     assignedArea: guard.assignedArea,
                     status: guard.status,
-                    supervisorId: guard.supervisorId
+                    supervisorId: guard.supervisorId || guard.supervisor_id
                 }));
 
                 setGuards(formattedGuards);
 
-
-                // Fetch ALL supervisors (Active, Suspended, Terminated) for proper name lookup
-                // Guards may reference supervisors of any status
-                const [activeRes, suspendedRes, terminatedRes] = await Promise.all([
+                // Fetch ALL supervisors (Active, Suspended, Terminated) AND Admin profile
+                const [activeRes, suspendedRes, terminatedRes, adminRes] = await Promise.all([
                     api.get(`/api/admin/supervisors?status=Active`),
                     api.get(`/api/admin/supervisors?status=Suspended`),
-                    api.get(`/api/admin/supervisors?status=Terminated`)
+                    api.get(`/api/admin/supervisors?status=Terminated`),
+                    api.get(`/api/admin/profile`).catch(() => ({ data: null }))
                 ]);
 
-                const allSupervisors = [
+                let allSupervisors = [
                     ...activeRes.data.data,
                     ...suspendedRes.data.data,
                     ...terminatedRes.data.data
                 ];
 
+                // Add Admin if available
+                if (adminRes.data) {
+                    const adminData = adminRes.data.userData || adminRes.data.data || adminRes.data;
+                    if (adminData && adminData.id) {
+                        if (!allSupervisors.find(s => s.id === adminData.id)) {
+                            allSupervisors.push({
+                                id: adminData.id,
+                                fullName: adminData.name || adminData.fullName || 'Admin',
+                                role: 'admin'
+                            });
+                        }
+                    }
+                }
+
                 const formattedSup = allSupervisors.map(sp => ({
                     id: sp.id,
-                    fullName: sp.fullName
+                    fullName: sp.fullName || sp.name
                 }));
 
                 setSupervisors(formattedSup);
@@ -72,9 +85,13 @@ function AllGuards() {
         }
         // Handle both string and number IDs
         const supervisor = supervisors.find(s => s.id == supervisorId); // Use == for type coercion
-        const result = supervisor ? supervisor.fullName : 'Unassigned';
 
-        return result;
+        if (supervisor) {
+            return supervisor.fullName;
+        }
+
+        // Return ID if name not found to help debugging
+        return `Unknown (ID: ${supervisorId})`;
     };
 
     const handleGuardClick = (guard) => {
