@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
+import TerminationReasonModal from "../components/TerminationReasonModal";
 import { Plus, Eye, Trash2, Ban, Download, ChevronDown } from "lucide-react";
 import api from "../api/api";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
@@ -15,6 +16,7 @@ function Supervisors() {
     const location = useLocation();
     const [supervisors, setSupervisors] = useState([]);
     const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+    const [terminationModal, setTerminationModal] = useState({ isOpen: false, supervisor: null });
 
     // Get status from query param: ?status=Active
     const queryParams = new URLSearchParams(location.search);
@@ -24,8 +26,10 @@ function Supervisors() {
         const fetchSupervisors = async () => {
             try {
                 const res = await api.get(`/api/admin/supervisors`);
-                // Filter by status
-                const filtered = res.data.data.filter(s => s.status === statusFilter);
+                // Filter by status and sort by ID (ascending) so new supervisors appear at the end
+                const filtered = res.data.data
+                    .filter(s => s.status === statusFilter)
+                    .sort((a, b) => a.id - b.id);
                 setSupervisors(filtered);
             } catch (err) {
                 console.error("Failed to load supervisors:", err);
@@ -79,6 +83,22 @@ function Supervisors() {
                 </span>
             )
         },
+        ...(statusFilter === 'Terminated' ? [{
+            header: "Termination Reason",
+            accessor: "terminationReason",
+            render: (row) => (
+                <div style={{
+                    maxWidth: '200px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    color: '#6b7280',
+                    fontSize: '0.875rem'
+                }}>
+                    {row.terminationReason || '—'}
+                </div>
+            )
+        }] : []),
         {
             header: "Actions",
             render: (row) => (
@@ -104,7 +124,7 @@ function Supervisors() {
                                     });
                                     // Refresh the list
                                     const res = await api.get(`/api/admin/supervisors`);
-                                    setSupervisors(res.data.data.filter(s => s.status === statusFilter));
+                                    setSupervisors(res.data.data.filter(s => s.status === statusFilter).sort((a, b) => a.id - b.id));
                                 } catch (err) {
                                     console.error("Failed to activate supervisor:", err);
                                 }
@@ -127,7 +147,7 @@ function Supervisors() {
                                         alert(`${row.fullName} cant log in on the app`);
                                         // Refresh the list
                                         const res = await api.get(`/api/admin/supervisors`);
-                                        setSupervisors(res.data.data.filter(s => s.status === statusFilter));
+                                        setSupervisors(res.data.data.filter(s => s.status === statusFilter).sort((a, b) => a.id - b.id));
                                     } catch (err) {
                                         console.error("Failed to suspend supervisor:", err);
                                         alert("Failed to suspend supervisor. Please try again.");
@@ -143,24 +163,39 @@ function Supervisors() {
 
                     {row.status !== "Terminated" && (
                         <button
-                            onClick={async (e) => {
+                            onClick={(e) => {
                                 e.stopPropagation();
-                                if (window.confirm(`Are you sure you want to terminate ${row.fullName}?`)) {
-                                    try {
-                                        await api.delete(`/api/admin/supervisors/${row.id}`);
-                                        // Refresh the list
-                                        const res = await api.get(`/api/admin/supervisors`);
-                                        setSupervisors(res.data.data.filter(s => s.status === statusFilter));
-                                    } catch (err) {
-                                        console.error("Failed to terminate supervisor:", err);
-                                        alert("Failed to terminate supervisor. Please try again.");
-                                    }
-                                }
+                                setTerminationModal({ isOpen: true, supervisor: row });
                             }}
                             className="btn-terminate"
                         >
                             <Trash2 size={14} />
                             Terminate
+                        </button>
+                    )}
+
+                    {row.status === "Terminated" && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setTerminationModal({ isOpen: true, supervisor: row, isEdit: true });
+                            }}
+                            className="btn-edit-reason"
+                            style={{
+                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                color: 'white',
+                                border: 'none',
+                                padding: '0.5rem 1rem',
+                                borderRadius: '6px',
+                                fontSize: '0.875rem',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.375rem'
+                            }}
+                        >
+                            Edit Reason
                         </button>
                     )}
                 </div>
@@ -177,6 +212,29 @@ function Supervisors() {
             exportToPDF(title, columns, supervisors, fileName);
         } else {
             await exportToExcel(supervisors, fileName, columns);
+        }
+    };
+
+    const handleTerminate = async (reason) => {
+        try {
+            if (terminationModal.isEdit) {
+                // Update termination reason
+                await api.put(`/api/admin/supervisors/${terminationModal.supervisor.id}/termination-reason`, {
+                    reason
+                });
+            } else {
+                // Terminate supervisor
+                await api.delete(`/api/admin/supervisors/${terminationModal.supervisor.id}`, {
+                    data: { reason }
+                });
+            }
+            // Refresh the list
+            const res = await api.get(`/api/admin/supervisors`);
+            setSupervisors(res.data.data.filter(s => s.status === statusFilter).sort((a, b) => a.id - b.id));
+            setTerminationModal({ isOpen: false, supervisor: null, isEdit: false });
+        } catch (err) {
+            console.error("Failed to process request:", err);
+            alert(`Failed to ${terminationModal.isEdit ? 'update reason' : 'terminate supervisor'}. Please try again.`);
         }
     };
 
@@ -252,6 +310,15 @@ function Supervisors() {
                     />
                 </div>
             </div>
+
+            {/* Termination Reason Modal */}
+            <TerminationReasonModal
+                isOpen={terminationModal.isOpen}
+                onClose={() => setTerminationModal({ isOpen: false, supervisor: null, isEdit: false })}
+                onSubmit={handleTerminate}
+                supervisorName={terminationModal.supervisor?.fullName || ''}
+                initialReason={terminationModal.supervisor?.terminationReason || ''}
+            />
         </div>
     );
 }

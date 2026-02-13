@@ -104,26 +104,13 @@ function Guards() {
             header: "Actions",
             render: (row) => (
                 <button
-                    onClick={async (e) => {
+                    onClick={(e) => {
                         e.stopPropagation();
-                        try {
-                            const newStatus = row.status === "Active" ? "Inactive" : "Active";
-                            await api.put(`/api/guards/${row.id}/status`, {
-                                status: newStatus
-                            });
-
-                            // Update local state
-                            setGuards(guards.map(g =>
-                                g.id === row.id ? { ...g, status: newStatus } : g
-                            ));
-                        } catch (err) {
-                            console.error("Failed to update status:", err);
-                            alert("Failed to update status");
-                        }
+                        navigate(`/guards/${row.id}`, { state: { fromSupervisorId: id } });
                     }}
-                    className={`btn-status-toggle ${row.status === "Active" ? "deactivate" : "activate"}`}
+                    className="btn-view"
                 >
-                    {row.status === "Active" ? "Deactivate" : "Activate"}
+                    View Details
                 </button>
             )
         }

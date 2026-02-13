@@ -1,16 +1,28 @@
 # Security Guard Admin System
 
-A production-grade full-stack application for managing security guards and supervisors.
+A production-grade application for managing security guards and supervisors.
 
 ## Project Structure
 
-- `backend/`: Node.js/Express API with PostgreSQL.
-- `frontend/`: React application with Vite.
+This repository contains the **frontend application only**. The backend API is hosted separately on an external platform.
+
+- `frontend/`: React application built with Vite and deployed to Vercel
+
+## Architecture
+
+- **Frontend**: React + Vite (this repository)
+- **Backend**: Node.js/Express API with PostgreSQL (hosted externally)
+- **Frontend Deployment**: Vercel
+- **Backend Deployment**: External platform (configured via environment variables)
 
 ## Setup Instructions
 
-Refer to the `README.md` in respective `backend/` and `frontend/` directories for detailed setup.
+1. Navigate to the `frontend/` directory
+2. Copy `.env.example` to `.env` and configure your backend API URL
+3. Install dependencies: `npm install`
+4. Run development server: `npm run dev`
+5. Build for production: `npm run build`
 
 ## Environment Variables
 
-Ensure `.env` files are created in both `backend/` and `frontend/` based on their respective `.env.example` files.
+The frontend requires a `.env` file with the backend API endpoint. See `frontend/.env.example` for the required configuration.

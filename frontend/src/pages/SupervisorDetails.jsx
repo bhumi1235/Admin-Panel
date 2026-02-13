@@ -114,25 +114,13 @@ function SupervisorDetails() {
             header: "Actions",
             render: (row) => (
                 <button
-                    onClick={async (e) => {
+                    onClick={(e) => {
                         e.stopPropagation();
-                        try {
-                            const newStatus = row.status === "Active" ? "Inactive" : "Active";
-                            await api.put(`/api/guards/${row.id}/status`, {
-                                status: newStatus
-                            });
-
-                            // Update local state
-                            setGuards(guards.map(g =>
-                                g.id === row.id ? { ...g, status: newStatus } : g
-                            ));
-                        } catch (err) {
-                            console.error("Failed to update status:", err);
-                        }
+                        navigate(`/guards/${row.id}`);
                     }}
-                    className={`btn-table-action ${row.status === "Active" ? "btn-red-gradient" : "btn-green-gradient"}`}
+                    className="btn-table-action btn-blue-gradient"
                 >
-                    {row.status === "Active" ? "Deactivate" : "Activate"}
+                    View
                 </button>
             )
         }

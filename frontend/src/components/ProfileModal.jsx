@@ -1,22 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { X, User, Mail, Shield, Calendar, Lock, ArrowLeft, Save, AlertCircle, CheckCircle, Edit3 } from 'lucide-react';
+import { X, User, Mail, Shield, Calendar } from 'lucide-react';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 
 function ProfileModal({ isOpen, onClose }) {
     const { user, setUser } = useAuth();
-    const [view, setView] = useState('info'); // 'info', 'password', or 'edit'
-    const [formData, setFormData] = useState({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-        name: '',
-        email: ''
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     // Fetch fresh profile data when modal opens
     useEffect(() => {
@@ -52,16 +41,7 @@ function ProfileModal({ isOpen, onClose }) {
         }
     }, [isOpen, setUser]);
 
-    // Update form data when user changes
-    useEffect(() => {
-        if (user) {
-            setFormData(prev => ({
-                ...prev,
-                name: user.name || '',
-                email: user.email || ''
-            }));
-        }
-    }, [user]);
+
 
     if (!isOpen) return null;
 
@@ -77,69 +57,7 @@ function ProfileModal({ isOpen, onClose }) {
     };
     const joinDate = formatDate(user?.createdAt || user?.created_at);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        setError('');
-        setSuccess('');
-    };
 
-    const handlePasswordSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-
-        if (formData.newPassword !== formData.confirmPassword) {
-            return setError('New passwords do not match');
-        }
-
-        if (formData.newPassword.length < 6) {
-            return setError('Password must be at least 6 characters');
-        }
-
-        const payload = {
-            old_password: formData.currentPassword,
-            new_password: formData.newPassword
-        };
-
-        console.log('Password change payload:', payload);
-        console.log('Form data:', formData);
-
-        setLoading(true);
-        try {
-            const response = await api.put('/api/admin/change-password', payload);
-            console.log('Password change response:', response);
-            setSuccess('Password updated successfully!');
-            setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
-            setTimeout(() => setView('info'), 2000);
-        } catch (err) {
-            console.error('Password change error:', err);
-            console.error('Error response:', err.response);
-            setError(err.response?.data?.message || 'Failed to update password');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleProfileSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-
-        setLoading(true);
-        try {
-            const res = await api.put('/api/admin/profile', {
-                name: formData.name,
-                email: formData.email
-            });
-            setUser(res.data);
-            setSuccess('Profile updated successfully!');
-            setTimeout(() => setView('info'), 2000);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to update profile');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
@@ -247,252 +165,32 @@ function ProfileModal({ isOpen, onClose }) {
 
                 {/* Content */}
                 <div style={{ padding: '1.5rem' }}>
-                    {view === 'info' ? (
-                        <>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                {/* Info Items */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-                                    <Mail size={20} color="#0d7377" />
-                                    <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Email Address</p>
-                                        <p style={{ margin: 0, fontSize: '0.875rem', color: '#111827', fontWeight: '600' }}>{adminEmail}</p>
-                                    </div>
-                                </div>
-
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-                                    <Shield size={20} color="#0d7377" />
-                                    <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Role</p>
-                                        <p style={{ margin: 0, fontSize: '0.875rem', color: '#111827', fontWeight: '600' }}>{userRole}</p>
-                                    </div>
-                                </div>
-
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-                                    <Calendar size={20} color="#0d7377" />
-                                    <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Member Since</p>
-                                        <p style={{ margin: 0, fontSize: '0.875rem', color: '#111827', fontWeight: '600' }}>{joinDate}</p>
-                                    </div>
-                                </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {/* Info Items */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
+                            <Mail size={20} color="#0d7377" />
+                            <div style={{ flex: 1 }}>
+                                <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Email Address</p>
+                                <p style={{ margin: 0, fontSize: '0.875rem', color: '#111827', fontWeight: '600' }}>{adminEmail}</p>
                             </div>
+                        </div>
 
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                                <button
-                                    onClick={() => setView('edit')}
-                                    style={{
-                                        flex: 1,
-                                        padding: '0.875rem',
-                                        background: 'white',
-                                        color: '#0d7377',
-                                        border: '1px solid #0d7377',
-                                        borderRadius: '12px',
-                                        fontSize: '0.9375rem',
-                                        fontWeight: '600',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.5rem',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    <Edit3 size={18} />
-                                    Edit Profile
-                                </button>
-                                <button
-                                    onClick={() => setView('password')}
-                                    style={{
-                                        flex: 1,
-                                        padding: '0.875rem',
-                                        background: 'white',
-                                        color: '#0d7377',
-                                        border: '1px solid #0d7377',
-                                        borderRadius: '12px',
-                                        fontSize: '0.9375rem',
-                                        fontWeight: '600',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.5rem',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    <Lock size={18} />
-                                    Password
-                                </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
+                            <Shield size={20} color="#0d7377" />
+                            <div style={{ flex: 1 }}>
+                                <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Role</p>
+                                <p style={{ margin: 0, fontSize: '0.875rem', color: '#111827', fontWeight: '600' }}>{userRole}</p>
                             </div>
-                        </>
-                    ) : view === 'password' ? (
-                        <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                <button
-                                    type="button"
-                                    onClick={() => setView('info')}
-                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex', alignItems: 'center' }}
-                                >
-                                    <ArrowLeft size={18} />
-                                </button>
-                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: '#111827' }}>Change Password</h3>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
+                            <Calendar size={20} color="#0d7377" />
+                            <div style={{ flex: 1 }}>
+                                <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Member Since</p>
+                                <p style={{ margin: 0, fontSize: '0.875rem', color: '#111827', fontWeight: '600' }}>{joinDate}</p>
                             </div>
-
-                            {error && (
-                                <div style={{ padding: '0.75rem', background: '#fef2f2', color: '#dc2626', borderRadius: '8px', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <AlertCircle size={16} />
-                                    {error}
-                                </div>
-                            )}
-
-                            {success && (
-                                <div style={{ padding: '0.75rem', background: '#ecfdf5', color: '#059669', borderRadius: '8px', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <CheckCircle size={16} />
-                                    {success}
-                                </div>
-                            )}
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.375rem', textTransform: 'uppercase' }}>Current Password</label>
-                                <input
-                                    type="password"
-                                    name="currentPassword"
-                                    value={formData.currentPassword}
-                                    onChange={handleChange}
-                                    placeholder="••••••••"
-                                    required
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', outline: 'none', boxSizing: 'border-box' }}
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.375rem', textTransform: 'uppercase' }}>New Password</label>
-                                <input
-                                    type="password"
-                                    name="newPassword"
-                                    value={formData.newPassword}
-                                    onChange={handleChange}
-                                    placeholder="Min. 6 characters"
-                                    required
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', outline: 'none', boxSizing: 'border-box' }}
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.375rem', textTransform: 'uppercase' }}>Confirm New Password</label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    placeholder="••••••••"
-                                    required
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', outline: 'none', boxSizing: 'border-box' }}
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                style={{
-                                    width: '100%',
-                                    marginTop: '0.5rem',
-                                    padding: '0.875rem',
-                                    background: loading ? '#9ca3af' : 'linear-gradient(135deg, #0d7377 0%, #14a0a5 100%)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '12px',
-                                    fontSize: '0.9375rem',
-                                    fontWeight: '600',
-                                    cursor: loading ? 'not-allowed' : 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '0.5rem',
-                                    boxShadow: '0 4px 12px rgba(13, 115, 119, 0.25)'
-                                }}
-                            >
-                                <Save size={18} />
-                                {loading ? 'Updating...' : 'Update Password'}
-                            </button>
-                        </form>
-                    ) : (
-                        <form onSubmit={handleProfileSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                <button
-                                    type="button"
-                                    onClick={() => setView('info')}
-                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex', alignItems: 'center' }}
-                                >
-                                    <ArrowLeft size={18} />
-                                </button>
-                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '700', color: '#111827' }}>Edit Profile</h3>
-                            </div>
-
-                            {error && (
-                                <div style={{ padding: '0.75rem', background: '#fef2f2', color: '#dc2626', borderRadius: '8px', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <AlertCircle size={16} />
-                                    {error}
-                                </div>
-                            )}
-
-                            {success && (
-                                <div style={{ padding: '0.75rem', background: '#ecfdf5', color: '#059669', borderRadius: '8px', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <CheckCircle size={16} />
-                                    {success}
-                                </div>
-                            )}
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.375rem', textTransform: 'uppercase' }}>Full Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Your Name"
-                                    required
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', outline: 'none', boxSizing: 'border-box' }}
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.375rem', textTransform: 'uppercase' }}>Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="your@email.com"
-                                    required
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e5e7eb', outline: 'none', boxSizing: 'border-box' }}
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                style={{
-                                    width: '100%',
-                                    marginTop: '0.5rem',
-                                    padding: '0.875rem',
-                                    background: loading ? '#9ca3af' : 'linear-gradient(135deg, #0d7377 0%, #14a0a5 100%)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '12px',
-                                    fontSize: '0.9375rem',
-                                    fontWeight: '600',
-                                    cursor: loading ? 'not-allowed' : 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '0.5rem',
-                                    boxShadow: '0 4px 12px rgba(13, 115, 119, 0.25)'
-                                }}
-                            >
-                                <Save size={18} />
-                                {loading ? 'Saving...' : 'Save Changes'}
-                            </button>
-                        </form>
-                    )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
