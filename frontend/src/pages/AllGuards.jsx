@@ -39,7 +39,7 @@ function AllGuards() {
 
                 const formattedSup = s.map(sp => ({
                     id: sp.id,
-                    fullName: sp.full_name
+                    fullName: sp.fullName
                 }));
 
                 setSupervisors(formattedSup);

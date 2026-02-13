@@ -185,7 +185,7 @@ function AddSupervisor() {
                                 onChange={handleChange}
                                 options={[
                                     { value: "Active", label: "Active" },
-                                    { value: "Inactive", label: "Inactive" }
+                                    { value: "Suspended", label: "Suspended" }
                                 ]}
                                 required
                             />
