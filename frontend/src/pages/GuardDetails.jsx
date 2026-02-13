@@ -282,9 +282,10 @@ function GuardDetails() {
                                     </div>
                                 </div>
 
-                                {supervisor && (
-                                    <div>
-                                        <p className="info-item-label">Supervisor</p>
+
+                                <div>
+                                    <p className="info-item-label">Supervisor</p>
+                                    {supervisor ? (
                                         <div
                                             onClick={() => navigate(`/supervisors/${guard.supervisorId}`)}
                                             className="info-item-value-box clickable"
@@ -298,8 +299,15 @@ function GuardDetails() {
                                                 {supervisor.fullName || "—"}
                                             </p>
                                         </div>
-                                    </div>
-                                )}
+                                    ) : (
+                                        <div className="info-item-value-box">
+                                            <User size={18} style={{ color: "#9ca3af", flexShrink: 0 }} />
+                                            <p className="info-item-text" style={{ color: "#6b7280" }}>
+                                                Unassigned
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

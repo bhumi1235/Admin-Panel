@@ -42,6 +42,9 @@ function AllGuards() {
                     fullName: sp.fullName
                 }));
 
+                console.log('Fetched supervisors:', formattedSup);
+                console.log('Sample guard with supervisorId:', formattedGuards[0]);
+
                 setSupervisors(formattedSup);
 
             } catch (err) {
@@ -56,8 +59,20 @@ function AllGuards() {
 
 
     const getSupervisorName = (supervisorId) => {
-        const supervisor = supervisors.find(s => s.id === supervisorId);
-        return supervisor ? supervisor.fullName : 'Unassigned';
+        if (!supervisorId) {
+            return 'Unassigned';
+        }
+        // Handle both string and number IDs
+        const supervisor = supervisors.find(s => s.id == supervisorId); // Use == for type coercion
+        const result = supervisor ? supervisor.fullName : 'Unassigned';
+
+        // Debug log for troubleshooting
+        if (!supervisor && supervisorId) {
+            console.log(`No supervisor found for ID: ${supervisorId} (type: ${typeof supervisorId})`);
+            console.log('Available supervisor IDs:', supervisors.map(s => `${s.id} (${typeof s.id})`));
+        }
+
+        return result;
     };
 
     const handleGuardClick = (guard) => {
