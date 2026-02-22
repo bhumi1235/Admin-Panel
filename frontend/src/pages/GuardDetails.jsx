@@ -30,6 +30,7 @@ function GuardDetails() {
     const fromSupervisorId = state?.fromSupervisorId;
     const [guard, setGuard] = useState(null);
     const [supervisor, setSupervisor] = useState(null);
+    const [photoModalOpen, setPhotoModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchGuard = async () => {
@@ -106,7 +107,7 @@ function GuardDetails() {
 
                     {/* Header with Profile Photo */}
                     <div style={{
-                        background: 'linear-gradient(135deg, #0d7377 0%, #14a0a5 100%)',
+                        background: 'linear-gradient(135deg, #1a237e 0%, #283593 100%)',
                         borderRadius: '16px',
                         padding: '2rem',
                         marginBottom: '2rem',
@@ -115,25 +116,91 @@ function GuardDetails() {
                         alignItems: 'center',
                         gap: '2rem'
                     }}>
-                        {/* Profile Photo */}
-                        <div style={{
-                            width: '120px',
-                            height: '120px',
-                            borderRadius: '50%',
-                            background: getImageUrl(guard.profileImage)
-                                ? `url(${getImageUrl(guard.profileImage)}) center/cover`
-                                : 'linear-gradient(135deg, #32e0c4 0%, #14a0a5 100%)',
-                            border: '4px solid rgba(255, 255, 255, 0.3)',
-                            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '2.5rem',
-                            fontWeight: '700',
-                            flexShrink: 0
-                        }}>
+                        {/* Profile Photo - clickable if photo exists */}
+                        <div
+                            style={{
+                                width: '120px',
+                                height: '120px',
+                                borderRadius: '50%',
+                                background: getImageUrl(guard.profileImage)
+                                    ? `url(${getImageUrl(guard.profileImage)}) center/cover`
+                                    : 'linear-gradient(135deg, #c0392b 0%, #e74c3c 100%)',
+                                border: '4px solid rgba(255, 255, 255, 0.3)',
+                                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '2.5rem',
+                                fontWeight: '700',
+                                flexShrink: 0,
+                                cursor: getImageUrl(guard.profileImage) ? 'pointer' : 'default',
+                                position: 'relative',
+                                transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                            }}
+                            title={getImageUrl(guard.profileImage) ? 'Click to view photo' : ''}
+                            onClick={() => getImageUrl(guard.profileImage) && setPhotoModalOpen(true)}
+                            onMouseEnter={e => { if (getImageUrl(guard.profileImage)) e.currentTarget.style.transform = 'scale(1.05)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                        >
                             {!getImageUrl(guard.profileImage) && (guard.fullName?.split(' ').map(n => n[0]).join('') || 'G')}
                         </div>
+
+                        {/* Photo Modal/Card */}
+                        {photoModalOpen && getImageUrl(guard.profileImage) && (
+                            <div
+                                onClick={() => setPhotoModalOpen(false)}
+                                style={{
+                                    position: 'fixed', inset: 0,
+                                    background: 'rgba(0,0,0,0.75)',
+                                    backdropFilter: 'blur(6px)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    zIndex: 9999, padding: '1.5rem'
+                                }}
+                            >
+                                <div
+                                    onClick={e => e.stopPropagation()}
+                                    style={{
+                                        background: 'white', borderRadius: '20px',
+                                        overflow: 'hidden', maxWidth: '420px', width: '100%',
+                                        boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
+                                        animation: 'slideUp 0.25s ease-out'
+                                    }}
+                                >
+                                    {/* Card header */}
+                                    <div style={{
+                                        background: 'linear-gradient(135deg, #1a237e 0%, #283593 100%)',
+                                        padding: '1rem 1.5rem',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                    }}>
+                                        <div>
+                                            <p style={{ margin: 0, color: 'white', fontWeight: 700, fontSize: '1.125rem' }}>{guard.fullName}</p>
+                                            <p style={{ margin: 0, color: 'rgba(255,255,255,0.75)', fontSize: '0.8rem' }}>Guard ID: {guard.guardID || '—'}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setPhotoModalOpen(false)}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.2)', border: 'none',
+                                                borderRadius: '50%', width: 36, height: 36,
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                cursor: 'pointer', color: 'white', fontSize: '1.25rem', fontWeight: 700
+                                            }}
+                                        >✕</button>
+                                    </div>
+                                    {/* Photo */}
+                                    <div style={{ padding: '1.5rem', textAlign: 'center' }}>
+                                        <img
+                                            src={getImageUrl(guard.profileImage)}
+                                            alt={guard.fullName}
+                                            style={{
+                                                width: '100%', maxHeight: '340px',
+                                                objectFit: 'contain', borderRadius: '12px',
+                                                boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Header Info */}
                         <div style={{ flex: 1 }}>

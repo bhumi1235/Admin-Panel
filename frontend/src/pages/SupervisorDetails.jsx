@@ -272,7 +272,7 @@ function SupervisorDetails() {
                                     borderRadius: "50%",
                                     background: getImageUrl(supervisor.profileImage)
                                         ? `url(${getImageUrl(supervisor.profileImage)}) center/cover`
-                                        : "linear-gradient(135deg, #0d7377 0%, #14a0a5 100%)",
+                                        : "linear-gradient(135deg, #c0392b 0%, #e74c3c 100%)",
                                     border: "3px solid #e5e7eb",
                                     flexShrink: 0,
                                     display: "flex",

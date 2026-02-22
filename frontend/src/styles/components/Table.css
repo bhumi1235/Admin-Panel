@@ -65,9 +65,9 @@
 }
 
 .custom-table tbody tr:hover {
-    background: #f0f9ff !important;
+    background: #f5f6ff !important;
     transform: scale(1.001);
-    box-shadow: inset 0 0 0 1px #e0f2fe;
+    box-shadow: inset 0 0 0 1px #e8eaff;
 }
 
 .custom-table td {

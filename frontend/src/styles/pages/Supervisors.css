@@ -3,7 +3,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -11,12 +11,12 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 2px 4px rgba(26, 35, 126, 0.2);
 }
 
 .btn-add:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 8px rgba(26, 35, 126, 0.3);
 }
 
 .actions-cell {
@@ -29,7 +29,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     color: white;
     border: none;
     border-radius: 6px;
@@ -41,7 +41,7 @@
 
 .btn-view:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 8px rgba(26, 35, 126, 0.3);
 }
 
 .btn-activate {

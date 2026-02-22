@@ -30,8 +30,8 @@
 .form-input-field:focus,
 .form-select-field:focus,
 .form-textarea-field:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #1a237e;
+    box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
 }
 
 .form-input-field.error,

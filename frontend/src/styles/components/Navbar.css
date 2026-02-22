@@ -1,17 +1,16 @@
 .navbar-container {
     height: 72px;
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     color: white;
     padding: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 16px rgba(13, 115, 119, 0.15);
+    box-shadow: 0 4px 16px rgba(26, 35, 126, 0.2);
     position: sticky;
     top: 0;
     z-index: 1000;
     overflow: visible;
-    /* Let the dropdown menu show if it's inside, but profile trigger should be clipped */
 }
 
 .welcome-section h3 {
@@ -24,7 +23,7 @@
 .welcome-section p {
     font-size: 0.8125rem;
     margin: 0;
-    color: #32e0c4;
+    color: #f1948a;
     font-weight: 500;
 }
 
@@ -70,7 +69,7 @@
     width: 100% !important;
     height: 100% !important;
     border-radius: 50% !important;
-    background: #0d7377 !important;
+    background: #c0392b !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -109,8 +108,7 @@
 .user-role {
     margin: 0 !important;
     font-size: 10px !important;
-    color: #0d7377 !important;
-    /* Dark teal */
+    color: #c0392b !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;

@@ -8,17 +8,22 @@
 }
 
 :root {
-  /* Teal/Cyan Color Palette - Inspired by mobile design */
-  --primary: #0d7377;
-  --primary-light: #14a0a5;
-  --primary-lighter: #32e0c4;
-  --accent: #41ead4;
-  --dark-teal: #0a5f62;
+  /* SR Logo Colors – Red & Navy Blue */
+  --primary: #c0392b;
+  /* deep red (the S) */
+  --primary-light: #e74c3c;
+  /* vivid red */
+  --primary-lighter: #f1948a;
+  /* soft red/pink */
+  --accent: #1a237e;
+  /* deep navy blue (the R) */
+  --dark-primary: #96281b;
+  /* darker red */
 
   /* Neutral Colors */
   --white: #ffffff;
   --off-white: #f8fafb;
-  --light-gray: #e8f4f5;
+  --light-gray: #fce4ec;
   --gray: #94a3b8;
   --dark-gray: #475569;
   --text-dark: #1e293b;
@@ -26,14 +31,14 @@
   /* Status Colors */
   --success: #10b981;
   --warning: #f59e0b;
-  --danger: #ef4444;
-  --info: #3b82f6;
+  --danger: #c0392b;
+  --info: #1a237e;
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(13, 115, 119, 0.08);
-  --shadow-md: 0 4px 16px rgba(13, 115, 119, 0.12);
-  --shadow-lg: 0 8px 24px rgba(13, 115, 119, 0.16);
-  --shadow-xl: 0 12px 32px rgba(13, 115, 119, 0.2);
+  --shadow-sm: 0 2px 8px rgba(192, 57, 43, 0.08);
+  --shadow-md: 0 4px 16px rgba(192, 57, 43, 0.12);
+  --shadow-lg: 0 8px 24px rgba(192, 57, 43, 0.16);
+  --shadow-xl: 0 12px 32px rgba(192, 57, 43, 0.2);
 
   /* Border Radius */
   --radius-sm: 8px;
@@ -49,6 +54,7 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
 }
+
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;

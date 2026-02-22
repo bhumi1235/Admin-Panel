@@ -64,11 +64,11 @@
 
 /* Color variations for icon background */
 .icon-bg-primary {
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(192, 57, 43, 0.1);
 }
 
 .icon-bg-secondary {
-    background: rgba(139, 92, 246, 0.1);
+    background: rgba(26, 35, 126, 0.1);
 }
 
 .icon-bg-success {
@@ -80,7 +80,7 @@
 }
 
 .icon-bg-danger {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(192, 57, 43, 0.1);
 }
 
 /* Icon colors are handled via props in the component for simplicity with Lucide icons */

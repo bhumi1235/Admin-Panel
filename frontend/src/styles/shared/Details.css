@@ -1,13 +1,13 @@
 /* Shared Details Page Styles */
 
-/* Back button - teal primary color */
+/* Back button */
 .back-button,
 .btn-back {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -15,23 +15,23 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(13, 115, 119, 0.25);
+    box-shadow: 0 2px 8px rgba(192, 57, 43, 0.25);
 }
 
 .back-button:hover,
 .btn-back:hover {
-    background: linear-gradient(135deg, #0b6266 0%, #128a8f 100%);
-    box-shadow: 0 4px 12px rgba(13, 115, 119, 0.35);
+    background: linear-gradient(135deg, #96281b 0%, #c0392b 100%);
+    box-shadow: 0 4px 12px rgba(192, 57, 43, 0.4);
     transform: translateY(-1px);
 }
 
 .details-header-card {
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     border-radius: 20px;
     padding: 2.5rem;
     margin-bottom: 2rem;
     color: white;
-    box-shadow: 0 10px 40px rgba(13, 115, 119, 0.3);
+    box-shadow: 0 10px 40px rgba(26, 35, 126, 0.3);
 }
 
 .details-header-content {
@@ -44,7 +44,7 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
@@ -136,7 +136,7 @@
 }
 
 .info-card-title svg {
-    color: #0d7377;
+    color: #c0392b;
 }
 
 .info-items-container {
@@ -166,8 +166,8 @@
 }
 
 .info-item-value-box.highlight {
-    background: linear-gradient(135deg, rgba(13, 115, 119, 0.08) 0%, rgba(20, 160, 165, 0.08) 100%);
-    border: 1px solid rgba(13, 115, 119, 0.15);
+    background: linear-gradient(135deg, rgba(192, 57, 43, 0.06) 0%, rgba(231, 76, 60, 0.06) 100%);
+    border: 1px solid rgba(192, 57, 43, 0.15);
 }
 
 .info-item-value-box.clickable {
@@ -209,19 +209,19 @@
 }
 
 .btn-blue-gradient {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
 }
 
 .btn-blue-gradient:hover {
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 6px 20px rgba(26, 35, 126, 0.35);
 }
 
 .btn-red-gradient {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
 }
 
 .btn-red-gradient:hover {
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+    box-shadow: 0 6px 20px rgba(192, 57, 43, 0.35);
 }
 
 .btn-green-gradient {
@@ -237,7 +237,7 @@
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -245,7 +245,7 @@
     font-size: 0.8125rem;
     font-weight: 700;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(13, 115, 119, 0.25);
+    box-shadow: 0 2px 8px rgba(26, 35, 126, 0.25);
 }
 
 .table-name {
@@ -266,12 +266,12 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, rgba(13, 115, 119, 0.08) 0%, rgba(20, 160, 165, 0.08) 100%);
-    border: 1px solid rgba(13, 115, 119, 0.15);
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.08) 0%, rgba(40, 53, 147, 0.08) 100%);
+    border: 1px solid rgba(26, 35, 126, 0.15);
     border-radius: 8px;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: #0d7377;
+    color: #1a237e;
     white-space: nowrap;
 }
 
@@ -294,9 +294,9 @@
 }
 
 .status-badge-sm.inactive {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.12) 100%);
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    color: #dc2626;
+    background: linear-gradient(135deg, rgba(192, 57, 43, 0.12) 0%, rgba(231, 76, 60, 0.1) 100%);
+    border: 1px solid rgba(192, 57, 43, 0.25);
+    color: #c0392b;
 }
 
 .status-dot-sm {
@@ -310,7 +310,7 @@
 }
 
 .status-dot-sm.inactive {
-    background: #ef4444;
+    background: #c0392b;
 }
 
 .btn-table-action {
@@ -349,8 +349,7 @@
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 0.5rem;
-    color: #3b82f6;
-    /* Matching primary color for the icon */
+    color: #1a237e;
 }
 
 .stats-banner-label {
@@ -403,7 +402,7 @@
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
     padding: 2rem;
     position: relative;
     color: white;
@@ -484,11 +483,11 @@
 }
 
 .modal-icon-blue {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
 }
 
 .modal-icon-teal {
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
 }
 
 .modal-icon-purple {

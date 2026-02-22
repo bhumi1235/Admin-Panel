@@ -4,7 +4,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -13,19 +13,16 @@
     cursor: pointer;
     margin-bottom: 1rem;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(13, 115, 119, 0.25);
+    box-shadow: 0 2px 8px rgba(192, 57, 43, 0.25);
 }
 
 .btn-back:hover,
 .back-button:hover {
-    background: linear-gradient(135deg, #0b6266 0%, #128a8f 100%);
-    box-shadow: 0 4px 12px rgba(13, 115, 119, 0.35);
+    background: linear-gradient(135deg, #96281b 0%, #c0392b 100%);
+    box-shadow: 0 4px 12px rgba(192, 57, 43, 0.35);
     transform: translateY(-1px);
 }
 
-.back-button-styled {
-    /* same as .btn-back when used with both classes */
-}
 
 .stats-banner {
     background: white;
@@ -60,11 +57,11 @@
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(26, 35, 126, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #3b82f6;
+    color: #1a237e;
 }
 
 .btn-status-toggle {
