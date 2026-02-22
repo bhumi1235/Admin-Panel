@@ -68,10 +68,6 @@ function Dashboard() {
                             <h1>Welcome back, {localStorage.getItem('adminName') || 'Admin'}!</h1>
                             <p>Here's what's happening with your security team today.</p>
                         </div>
-                        <div className="welcome-badge">
-                            <TrendingUp size={18} />
-                            Live Overview
-                        </div>
                     </div>
 
                     {/* Summary Row */}

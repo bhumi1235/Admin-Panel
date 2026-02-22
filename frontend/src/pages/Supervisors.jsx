@@ -4,8 +4,9 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
 import TerminationReasonModal from "../components/TerminationReasonModal";
-import { Plus, Eye, Trash2, Ban, Download, ChevronDown } from "lucide-react";
+import { Plus, Eye, Trash2, Ban, Download, ChevronDown, Shield } from "lucide-react";
 import api from "../api/api";
+import { getImageUrl } from "../utils/imageUtils";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
 import "../styles/global/layout.css";
 import "../styles/shared/GuardTable.css";
@@ -29,6 +30,11 @@ function Supervisors() {
                 // Filter by status and sort by ID (ascending) so new supervisors appear at the end
                 const filtered = res.data.data
                     .filter(s => s.status === statusFilter)
+                    .map(s => ({
+                        ...s,
+                        fullName: s.fullName || s.full_name,
+                        profileImage: s.profileImage || s.profile_image
+                    }))
                     .sort((a, b) => a.id - b.id);
                 setSupervisors(filtered);
             } catch (err) {
@@ -46,8 +52,15 @@ function Supervisors() {
             accessor: "fullName",
             render: (row) => (
                 <div className="guard-name-cell">
-                    <div className="guard-avatar">
-                        {row.fullName.split(' ').map(n => n[0]).join('')}
+                    <div
+                        className="guard-avatar"
+                        style={{
+                            background: getImageUrl(row.profileImage)
+                                ? `url(${getImageUrl(row.profileImage)}) center/cover`
+                                : undefined
+                        }}
+                    >
+                        {!getImageUrl(row.profileImage) && row.fullName.split(' ').map(n => n[0]).join('')}
                     </div>
                     <span className="guard-name-text">
                         {row.fullName}
@@ -162,16 +175,42 @@ function Supervisors() {
                     )}
 
                     {row.status !== "Terminated" && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setTerminationModal({ isOpen: true, supervisor: row });
-                            }}
-                            className="btn-terminate"
-                        >
-                            <Trash2 size={14} />
-                            Terminate
-                        </button>
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setTerminationModal({ isOpen: true, supervisor: row });
+                                }}
+                                className="btn-terminate"
+                            >
+                                <Trash2 size={14} />
+                                Terminate
+                            </button>
+                            <button
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm(`Permanently delete ${row.fullName}? This cannot be undone.`)) {
+                                        try {
+                                            await api.delete(`/api/admin/supervisors/${row.id}/permanent`);
+                                            // Refresh
+                                            const res = await api.get(`/api/admin/supervisors`);
+                                            setSupervisors(res.data.data.filter(s => s.status === statusFilter).map(s => ({
+                                                ...s,
+                                                fullName: s.fullName || s.full_name,
+                                                profileImage: s.profileImage || s.profile_image
+                                            })).sort((a, b) => a.id - b.id));
+                                        } catch (err) {
+                                            console.error("Failed to delete supervisor:", err);
+                                            alert("Failed to permanently delete supervisor.");
+                                        }
+                                    }
+                                }}
+                                className="btn-icon-delete"
+                                title="Permanently delete"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </>
                     )}
 
                     {row.status === "Terminated" && (

@@ -66,11 +66,11 @@ function Profile() {
                                 width: "80px",
                                 height: "80px",
                                 borderRadius: "50%",
-                                background: "linear-gradient(135deg, #0d7377 0%, #14a0a5 100%)",
+                                background: "linear-gradient(135deg, #c0392b 0%, #e74c3c 100%)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                border: "4px solid #e5e7eb"
+                                border: "4px solid #e8eaf6"
                             }}>
                                 <User size={40} color="white" strokeWidth={2.5} />
                             </div>
@@ -86,21 +86,21 @@ function Profile() {
 
                         <div className="info-items-container">
                             <div className="info-item-value-box">
-                                <Mail size={20} color="#0d7377" />
+                                <Mail size={20} color="#c0392b" />
                                 <div>
                                     <p className="info-item-label" style={{ marginBottom: "0.25rem" }}>Email</p>
                                     <p className="info-item-text" style={{ fontWeight: "600" }}>{adminEmail || "—"}</p>
                                 </div>
                             </div>
                             <div className="info-item-value-box">
-                                <Shield size={20} color="#0d7377" />
+                                <Shield size={20} color="#c0392b" />
                                 <div>
                                     <p className="info-item-label" style={{ marginBottom: "0.25rem" }}>Role</p>
                                     <p className="info-item-text" style={{ fontWeight: "600" }}>{userRole}</p>
                                 </div>
                             </div>
                             <div className="info-item-value-box">
-                                <Calendar size={20} color="#0d7377" />
+                                <Calendar size={20} color="#c0392b" />
                                 <div>
                                     <p className="info-item-label" style={{ marginBottom: "0.25rem" }}>Member Since</p>
                                     <p className="info-item-text" style={{ fontWeight: "600" }}>{joinDate}</p>
