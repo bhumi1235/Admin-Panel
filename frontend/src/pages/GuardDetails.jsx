@@ -2,10 +2,26 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, AlertCircle, Shield, User, Clock, Briefcase, FileText, Download, UserCheck } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Calendar, AlertCircle, Shield, User, Clock, Briefcase, FileText, Download, UserCheck, FileSpreadsheet } from 'lucide-react';
 import api from "../api/api";
+import { getImageUrl } from "../utils/imageUtils";
+import { API_BASE_URL } from "../config/config";
 import "../styles/global/layout.css";
 import "../styles/shared/Details.css";
+
+const downloadFile = async (url, filename) => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error("Download failed");
+    const blob = await res.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+};
 
 function GuardDetails() {
     const navigate = useNavigate();
@@ -104,8 +120,8 @@ function GuardDetails() {
                             width: '120px',
                             height: '120px',
                             borderRadius: '50%',
-                            background: guard.profileImage
-                                ? `url(${guard.profileImage}) center/cover`
+                            background: getImageUrl(guard.profileImage)
+                                ? `url(${getImageUrl(guard.profileImage)}) center/cover`
                                 : 'linear-gradient(135deg, #32e0c4 0%, #14a0a5 100%)',
                             border: '4px solid rgba(255, 255, 255, 0.3)',
                             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
@@ -116,7 +132,7 @@ function GuardDetails() {
                             fontWeight: '700',
                             flexShrink: 0
                         }}>
-                            {!guard.profileImage && (guard.fullName?.split(' ').map(n => n[0]).join('') || 'G')}
+                            {!getImageUrl(guard.profileImage) && (guard.fullName?.split(' ').map(n => n[0]).join('') || 'G')}
                         </div>
 
                         {/* Header Info */}
@@ -152,6 +168,44 @@ function GuardDetails() {
                                         {guard.status || "—"}
                                     </span>
                                 </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const url = `${API_BASE_URL}/api/admin/guards/${guard.id}/export/pdf`;
+                                            await downloadFile(url, `Guard_${guard.fullName?.replace(/\s+/g, "_")}.pdf`);
+                                        } catch (e) {
+                                            alert("PDF download failed. Please try again.");
+                                        }
+                                    }}
+                                    style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                                        padding: '0.5rem 1rem', background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                        color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '600', cursor: 'pointer'
+                                    }}
+                                >
+                                    <FileText size={18} />
+                                    PDF Download
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const url = `${API_BASE_URL}/api/admin/guards/${guard.id}/export/excel`;
+                                            await downloadFile(url, `Guard_${guard.fullName?.replace(/\s+/g, "_")}.xlsx`);
+                                        } catch (e) {
+                                            alert("Excel download failed. Please try again.");
+                                        }
+                                    }}
+                                    style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                                        padding: '0.5rem 1rem', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                                        color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '600', cursor: 'pointer'
+                                    }}
+                                >
+                                    <FileSpreadsheet size={18} />
+                                    Excel Download
+                                </button>
                             </div>
                         </div>
                     </div>

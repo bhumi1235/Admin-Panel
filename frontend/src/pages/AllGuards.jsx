@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
-import { Shield, UserCheck, Trash2, Download, ChevronDown, UserPlus } from "lucide-react";
+import { Shield, UserCheck, Trash2, Download, ChevronDown } from "lucide-react";
 import api from "../api/api";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
 import "../styles/global/layout.css";
@@ -11,9 +11,13 @@ import "../styles/shared/GuardTable.css";
 
 function AllGuards() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [guards, setGuards] = useState([]);
     const [supervisors, setSupervisors] = useState([]);
     const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+
+    const queryParams = new URLSearchParams(location.search);
+    const statusFilter = queryParams.get("status") || "Active";
 
     useEffect(() => {
         const fetchAllGuards = async () => {
@@ -98,6 +102,8 @@ function AllGuards() {
         navigate(`/guards/${guard.id}`);
     };
 
+    const filteredGuards = guards.filter(g => g.status === statusFilter);
+
     const columns = [
         {
             header: "Guard Name",
@@ -158,47 +164,59 @@ function AllGuards() {
         {
             header: "Actions",
             render: (row) => (
-                <button
-                    onClick={async (e) => {
-                        e.stopPropagation();
-                        if (window.confirm(`Are you sure you want to delete ${row.name}?`)) {
-                            try {
-                                await api.delete(`/api/guards/${row.id}`);
-                                // Refresh the list
-                                const guardsRes = await api.get(`/api/guards`);
-                                const updatedGuards = guardsRes.data.data.map(guard => ({
-                                    id: guard.id,
-                                    name: guard.fullName,
-                                    phone: guard.phone,
-                                    assignedArea: guard.assignedArea,
-                                    status: guard.status,
-                                    supervisorId: guard.supervisorId
-                                }));
-                                setGuards(updatedGuards);
-                            } catch (err) {
-                                console.error("Failed to delete guard:", err);
-                                alert("Failed to delete guard. Please try again.");
-                            }
-                        }
-                    }}
-                    className="btn-delete"
-                >
-                    <Trash2 size={14} />
-                    Delete
-                </button>
+                <div className="actions-cell" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    {row.status !== "Terminated" && (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); navigate(`/guards/${row.id}`); }}
+                            className="btn-view"
+                        >
+                            View
+                        </button>
+                    )}
+                    {row.status === "Terminated" && (
+                        <button
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                if (window.confirm(`Permanently delete ${row.name}? This cannot be undone.`)) {
+                                    try {
+                                        await api.delete(`/api/admin/guards/${row.id}/permanent`);
+                                        const guardsRes = await api.get(`/api/guards`);
+                                        const updatedGuards = guardsRes.data.data.map(guard => ({
+                                            id: guard.id,
+                                            name: guard.fullName,
+                                            phone: guard.phone,
+                                            assignedArea: guard.assignedArea,
+                                            status: guard.status,
+                                            supervisorId: guard.supervisorId || guard.supervisor_id
+                                        }));
+                                        setGuards(updatedGuards);
+                                    } catch (err) {
+                                        console.error("Failed to delete guard:", err);
+                                        alert("Failed to permanently delete guard. Please try again.");
+                                    }
+                                }
+                            }}
+                            className="btn-delete"
+                            title="Permanently delete"
+                        >
+                            <Trash2 size={14} />
+                            Delete
+                        </button>
+                    )}
+                </div>
             )
         }
     ];
 
     const handleDownload = async (format) => {
         setIsDownloadOpen(false);
-        const fileName = `All_Guards_${new Date().toISOString().split('T')[0]}`;
-        const title = "All Security Guards List";
+        const fileName = `${statusFilter}_Guards_${new Date().toISOString().split('T')[0]}`;
+        const title = `${statusFilter} Security Guards List`;
 
         if (format === 'pdf') {
-            exportToPDF(title, columns, guards, fileName);
+            exportToPDF(title, columns, filteredGuards, fileName);
         } else {
-            await exportToExcel(guards, fileName, columns);
+            await exportToExcel(filteredGuards, fileName, columns);
         }
     };
 
@@ -214,10 +232,10 @@ function AllGuards() {
                     <div className="page-header">
                         <div>
                             <h1 className="page-title">
-                                All Security Guards
+                                {statusFilter} Security Guards
                             </h1>
                             <p className="page-subtitle">
-                                View all guards with their assignment status
+                                {statusFilter === "Active" ? "View active guards and assignments" : statusFilter === "Suspended" ? "View suspended guards" : "View terminated guards"}
                             </p>
                         </div>
                         <div style={{ display: "flex", gap: "1rem" }}>
@@ -255,12 +273,34 @@ function AllGuards() {
                             </div>
                         </div>
                     </div>
+                    {/* Status filter links */}
+                    <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+                        {["Active", "Suspended", "Terminated"].map((status) => (
+                            <button
+                                key={status}
+                                onClick={() => navigate(`/all-guards?status=${status}`)}
+                                style={{
+                                    padding: "0.5rem 1rem",
+                                    borderRadius: "8px",
+                                    border: statusFilter === status ? "2px solid #0d7377" : "1px solid #e5e7eb",
+                                    background: statusFilter === status ? "rgba(13, 115, 119, 0.1)" : "white",
+                                    color: statusFilter === status ? "#0d7377" : "#6b7280",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    fontSize: "0.875rem"
+                                }}
+                            >
+                                {status}
+                            </button>
+                        ))}
+                    </div>
+
                     {/* Guards Table */}
                     <Table
                         columns={columns}
-                        data={guards}
-                        onRowClick={handleGuardClick}
-                        emptyMessage="No guards found in the system."
+                        data={filteredGuards}
+                        onRowClick={(row) => row.status !== "Terminated" && handleGuardClick(row)}
+                        emptyMessage={`No ${statusFilter.toLowerCase()} guards found.`}
                     />
                 </div>
             </div>

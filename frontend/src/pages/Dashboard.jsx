@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import StatCard from "../components/StatCard";
-import { Users, Shield, UserCheck, ShieldCheck } from "lucide-react";
+import { Users, Shield, UserCheck, UserX, UserMinus } from "lucide-react";
 import api from "../api/api";
 import "../styles/pages/Dashboard.css";
 
@@ -11,21 +11,31 @@ function Dashboard() {
     const navigate = useNavigate();
     const [stats, setStats] = useState({
         totalSupervisors: 0,
-        activeSupervisors: 0,
         totalGuards: 0,
+        activeSupervisorsCount: 0,
+        suspendedSupervisorsCount: 0,
+        terminatedSupervisorsCount: 0,
+        activeGuardsCount: 0,
+        suspendedGuardsCount: 0,
+        terminatedGuardsCount: 0,
     });
 
     useEffect(() => {
         const fetchDashboard = async () => {
             try {
-                const res = await api.get(`/api/admin/dashboard`);
+                const dashboardRes = await api.get(`/api/admin/dashboard`);
+                const res = dashboardRes.data;
 
                 setStats({
-                    totalSupervisors: res.data.totalSupervisors,
-                    activeSupervisors: res.data.activeSupervisors,
-                    totalGuards: res.data.totalGuards,
+                    totalSupervisors: res.totalSupervisors ?? 0,
+                    totalGuards: res.totalGuards ?? 0,
+                    activeSupervisorsCount: res.totalActiveSupervisors ?? 0,
+                    suspendedSupervisorsCount: res.totalSuspendedSupervisors ?? 0,
+                    terminatedSupervisorsCount: res.totalTerminatedSupervisors ?? 0,
+                    activeGuardsCount: res.totalActiveGuards ?? 0,
+                    suspendedGuardsCount: res.totalSuspendedGuards ?? 0,
+                    terminatedGuardsCount: res.totalTerminatedGuards ?? 0,
                 });
-
             } catch (err) {
                 console.error("Failed to load dashboard:", err);
             }
@@ -72,6 +82,29 @@ function Dashboard() {
                             onClick={() => navigate('/all-guards')}
                         />
 
+                        <StatCard
+                            icon={UserCheck}
+                            title="Total Active Supervisor/Guard"
+                            value={stats.activeSupervisorsCount + stats.activeGuardsCount}
+                            color="success"
+                            onClick={() => navigate('/supervisors?status=Active')}
+                        />
+
+                        <StatCard
+                            icon={UserMinus}
+                            title="Total Suspended Supervisor/Guard"
+                            value={stats.suspendedSupervisorsCount + stats.suspendedGuardsCount}
+                            color="warning"
+                            onClick={() => navigate('/supervisors?status=Suspended')}
+                        />
+
+                        <StatCard
+                            icon={UserX}
+                            title="Total Terminated Supervisor/Guard"
+                            value={stats.terminatedSupervisorsCount + stats.terminatedGuardsCount}
+                            color="danger"
+                            onClick={() => navigate('/supervisors?status=Terminated')}
+                        />
                     </div>
 
                     {/* Quick Actions */}

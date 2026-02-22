@@ -175,28 +175,54 @@ function Supervisors() {
                     )}
 
                     {row.status === "Terminated" && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setTerminationModal({ isOpen: true, supervisor: row, isEdit: true });
-                            }}
-                            className="btn-edit-reason"
-                            style={{
-                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                                color: 'white',
-                                border: 'none',
-                                padding: '0.5rem 1rem',
-                                borderRadius: '6px',
-                                fontSize: '0.875rem',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.375rem'
-                            }}
-                        >
-                            Edit Reason
-                        </button>
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setTerminationModal({ isOpen: true, supervisor: row, isEdit: true });
+                                }}
+                                className="btn-edit-reason"
+                                style={{
+                                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '6px',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.375rem'
+                                }}
+                            >
+                                Edit Reason
+                            </button>
+                            <button
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm(`Permanently delete ${row.fullName}? This cannot be undone.`)) {
+                                        try {
+                                            try {
+                                                await api.delete(`/api/admin/supervisors/${row.id}/permanent`);
+                                            } catch (_) {
+                                                await api.delete(`/api/admin/supervisors/${row.id}`);
+                                            }
+                                            const res = await api.get(`/api/admin/supervisors`);
+                                            setSupervisors(res.data.data.filter(s => s.status === statusFilter).sort((a, b) => a.id - b.id));
+                                        } catch (err) {
+                                            console.error("Failed to delete supervisor:", err);
+                                            alert("Failed to permanently delete supervisor. Please try again.");
+                                        }
+                                    }
+                                }}
+                                className="btn-delete"
+                                title="Permanently delete"
+                                style={{ padding: '0.5rem' }}
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </>
                     )}
                 </div>
             )

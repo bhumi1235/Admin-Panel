@@ -3,10 +3,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
-import { ArrowLeft, Mail, Phone, Calendar, Shield, ToggleLeft, ToggleRight, UserPlus } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Calendar, Shield, ToggleLeft, ToggleRight, FileText, FileSpreadsheet } from "lucide-react";
 import api from "../api/api";
+import { getImageUrl } from "../utils/imageUtils";
+import { API_BASE_URL } from "../config/config";
 import "../styles/global/layout.css";
 import "../styles/shared/Details.css";
+
+const downloadFile = async (url, filename) => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error("Download failed");
+    const blob = await res.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+};
 
 function SupervisorDetails() {
     const navigate = useNavigate();
@@ -24,11 +40,12 @@ function SupervisorDetails() {
 
                 setSupervisor({
                     id: s.id,
-                    fullName: s.fullName,
+                    fullName: s.fullName || s.full_name,
                     email: s.email,
                     phone: s.phone,
                     status: s.status,
-                    createdDate: s.createdDate
+                    createdDate: s.createdDate || s.created_date,
+                    profileImage: s.profileImage || s.profile_image
                 });
 
                 // guards
@@ -159,21 +176,68 @@ function SupervisorDetails() {
                             back to Supervisors
                         </button>
 
-                        <h1 style={{
-                            fontSize: "2rem",
-                            fontWeight: "700",
-                            color: "#111827",
-                            marginBottom: "0.5rem"
-                        }}>
-                            Supervisor Details
-                        </h1>
-                        <p style={{
-                            fontSize: "1rem",
-                            color: "#6b7280",
-                            margin: 0
-                        }}>
-                            View and manage supervisor information and assigned guards
-                        </p>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
+                            <div>
+                                <h1 style={{
+                                    fontSize: "2rem",
+                                    fontWeight: "700",
+                                    color: "#111827",
+                                    marginBottom: "0.5rem"
+                                }}>
+                                    Supervisor Details
+                                </h1>
+                                <p style={{
+                                    fontSize: "1rem",
+                                    color: "#6b7280",
+                                    margin: 0
+                                }}>
+                                    View and manage supervisor information and assigned guards
+                                </p>
+                            </div>
+                            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const url = `${API_BASE_URL}/api/admin/supervisors/${id}/export/pdf`;
+                                            await downloadFile(url, `Supervisor_${supervisor.fullName?.replace(/\s+/g, "_")}.pdf`);
+                                        } catch (e) {
+                                            alert("PDF download failed. Please try again.");
+                                        }
+                                    }}
+                                    className="btn-download"
+                                    style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+                                >
+                                    <FileText size={18} />
+                                    PDF Download
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const url = `${API_BASE_URL}/api/admin/supervisors/${id}/export/excel`;
+                                            await downloadFile(url, `Supervisor_${supervisor.fullName?.replace(/\s+/g, "_")}.xlsx`);
+                                        } catch (e) {
+                                            alert("Excel download failed. Please try again.");
+                                        }
+                                    }}
+                                    style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        padding: "0.5rem 1rem",
+                                        background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        fontSize: "0.875rem",
+                                        fontWeight: "600",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    <FileSpreadsheet size={18} />
+                                    Excel Download
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="info-grid">
@@ -191,6 +255,41 @@ function SupervisorDetails() {
                                 <span className={`status-badge-sm ${supervisor.status.toLowerCase()}`}>
                                     {supervisor.status}
                                 </span>
+                            </div>
+
+                            {/* Supervisor profile photo */}
+                            <div style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "1.5rem",
+                                marginBottom: "1.5rem",
+                                paddingBottom: "1.5rem",
+                                borderBottom: "1px solid #e5e7eb"
+                            }}>
+                                <div style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    borderRadius: "50%",
+                                    background: getImageUrl(supervisor.profileImage)
+                                        ? `url(${getImageUrl(supervisor.profileImage)}) center/cover`
+                                        : "linear-gradient(135deg, #0d7377 0%, #14a0a5 100%)",
+                                    border: "3px solid #e5e7eb",
+                                    flexShrink: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "1.5rem",
+                                    fontWeight: "700",
+                                    color: "white"
+                                }}>
+                                    {!getImageUrl(supervisor.profileImage) && (supervisor.fullName?.split(" ").map(n => n[0]).join("") || "S")}
+                                </div>
+                                <div>
+                                    <p className="info-item-label" style={{ marginBottom: "0.25rem" }}>Profile</p>
+                                    <p className="info-item-text" style={{ fontWeight: "600", fontSize: "1.125rem" }}>
+                                        {supervisor.fullName}
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="info-items-container">

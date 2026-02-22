@@ -35,9 +35,6 @@ function ProfileModal({ isOpen, onClose }) {
 
         if (isOpen) {
             fetchProfile();
-            setView('info');
-            setError('');
-            setSuccess('');
         }
     }, [isOpen, setUser]);
 

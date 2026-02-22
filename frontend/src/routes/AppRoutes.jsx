@@ -12,6 +12,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import DutyTypes from "../pages/DutyTypes";
 import AddDutyType from "../pages/AddDutyType";
 import EditDutyType from "../pages/EditDutyType";
+import Profile from "../pages/Profile";
 
 
 function AppRoutes() {
@@ -29,6 +30,7 @@ function AppRoutes() {
                 <Route path="/guards" element={<AllGuards />} />
                 <Route path="/guards/:id" element={<GuardDetails />} />
                 <Route path="/all-guards" element={<AllGuards />} />
+                <Route path="/profile" element={<Profile />} />
 
                 {/* Duty Types Routes */}
                 <Route path="/duty-types" element={<DutyTypes />} />

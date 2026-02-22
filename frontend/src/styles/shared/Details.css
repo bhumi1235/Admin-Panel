@@ -1,5 +1,30 @@
 /* Shared Details Page Styles */
 
+/* Back button - teal primary color */
+.back-button,
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(13, 115, 119, 0.25);
+}
+
+.back-button:hover,
+.btn-back:hover {
+    background: linear-gradient(135deg, #0b6266 0%, #128a8f 100%);
+    box-shadow: 0 4px 12px rgba(13, 115, 119, 0.35);
+    transform: translateY(-1px);
+}
+
 .details-header-card {
     background: linear-gradient(135deg, #0d7377 0%, #14a0a5 100%);
     border-radius: 20px;

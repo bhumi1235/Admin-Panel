@@ -1,13 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import ProfileModal from "./ProfileModal";
 import { useAuth } from "../context/AuthContext";
 import "../styles/components/Navbar.css";
 
 function Navbar() {
+    const navigate = useNavigate();
     const { user } = useAuth();
     const adminName = user?.name || 'Admin';
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    const handleProfileClick = () => {
+        navigate("/profile");
+        setIsProfileOpen(false);
+    };
 
     return (
         <div className="navbar-container">
@@ -19,10 +26,13 @@ function Navbar() {
 
             {/* Right side - User profile & actions */}
             <div className="user-actions">
-                {/* User Profile - Premium Design */}
+                {/* User Profile - navigates to profile page */}
                 <div
-                    onClick={() => setIsProfileOpen(true)}
+                    onClick={handleProfileClick}
                     className="profile-trigger"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === "Enter" && handleProfileClick()}
                 >
                     {/* Avatar with gradient ring */}
                     <div className="avatar-container">
@@ -46,7 +56,7 @@ function Navbar() {
                 </div>
             </div>
 
-            {/* Profile Modal */}
+            {/* Profile Modal (optional; profile page is primary) */}
             <ProfileModal
                 isOpen={isProfileOpen}
                 onClose={() => setIsProfileOpen(false)}
