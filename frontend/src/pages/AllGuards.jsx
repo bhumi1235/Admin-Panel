@@ -28,7 +28,7 @@ function AllGuards() {
         const fetchData = async () => {
             try {
                 // Fetch all guards
-                const guardsRes = await api.get(`/api/guards`);
+                const guardsRes = await api.get(`/api/admin/guards`);
                 const g = guardsRes.data.data;
 
                 const formattedGuards = g.map(guard => ({
@@ -78,6 +78,7 @@ function AllGuards() {
 
             } catch (err) {
                 console.error("Failed to load data:", err);
+                alert(`Failed to load guards data: ${err?.response?.data?.message || err.message}`);
             }
         };
 
@@ -92,7 +93,7 @@ function AllGuards() {
 
     const refreshGuards = async () => {
         try {
-            const guardsRes = await api.get(`/api/guards`);
+            const guardsRes = await api.get(`/api/admin/guards`);
             const g = guardsRes.data.data;
             const formattedGuards = g.map(guard => ({
                 id: guard.id,
