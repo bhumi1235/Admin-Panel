@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { X, AlertTriangle, Save } from 'lucide-react';
 
-function TerminationReasonModal({ isOpen, onClose, onSubmit, supervisorName, initialReason = '' }) {
+function TerminationReasonModal({ isOpen, onClose, onSubmit, supervisorName, initialReason = '', titleLabel = 'Supervisor' }) {
     const [reason, setReason] = useState(initialReason);
     const [loading, setLoading] = useState(false);
 
@@ -106,7 +106,7 @@ function TerminationReasonModal({ isOpen, onClose, onSubmit, supervisorName, ini
                                 fontSize: '1.25rem',
                                 fontWeight: '700'
                             }}>
-                                {initialReason ? 'Update Termination Reason' : 'Terminate Supervisor'}
+                                {initialReason ? 'Update Termination Reason' : `Terminate ${titleLabel}`}
                             </h2>
                             <p style={{
                                 margin: 0,
@@ -210,7 +210,8 @@ TerminationReasonModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     supervisorName: PropTypes.string.isRequired,
-    initialReason: PropTypes.string
+    initialReason: PropTypes.string,
+    titleLabel: PropTypes.string
 };
 
 export default TerminationReasonModal;

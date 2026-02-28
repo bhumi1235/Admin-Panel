@@ -9,7 +9,12 @@ function Sidebar() {
     const { logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    const [supervisorsOpen, setSupervisorsOpen] = useState(false);
+    const [supervisorsOpen, setSupervisorsOpen] = useState(
+        location.pathname.startsWith('/supervisors')
+    );
+    const [guardsOpen, setGuardsOpen] = useState(
+        location.pathname.startsWith('/all-guards') || location.pathname.startsWith('/guards')
+    );
 
     const isActive = (path) => {
         return location.pathname === path || location.pathname.startsWith(path + '/');
@@ -31,6 +36,12 @@ function Sidebar() {
         { label: "Active Supervisors", status: "Active" },
         { label: "Suspended Supervisors", status: "Suspended" },
         { label: "Terminated Supervisors", status: "Terminated" }
+    ];
+
+    const guardSubItems = [
+        { label: "Active Guards", status: "Active" },
+        { label: "Suspended Guards", status: "Suspended" },
+        { label: "Terminated Guards", status: "Terminated" }
     ];
 
     return (
@@ -91,14 +102,31 @@ function Sidebar() {
                     )}
                 </div>
 
-                {/* All Guards */}
-                <Link
-                    to="/all-guards"
-                    className={`sidebar-item ${isActive("/all-guards") ? "active" : ""}`}
-                >
-                    <Shield size={22} strokeWidth={isActive("/all-guards") ? 2.5 : 2} />
-                    <span>All Guards</span>
-                </Link>
+                {/* All Guards Dropdown */}
+                <div>
+                    <div
+                        onClick={() => setGuardsOpen(!guardsOpen)}
+                        className={`sidebar-item ${(isActive("/all-guards") || guardsOpen) ? "group-active" : ""}`}
+                    >
+                        <Shield size={22} strokeWidth={(isActive("/all-guards") || guardsOpen) ? 2.5 : 2} />
+                        <span style={{ flex: 1 }}>All Guards</span>
+                        {guardsOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                    </div>
+
+                    {guardsOpen && (
+                        <div className="sidebar-sub-list">
+                            {guardSubItems.map((subItem) => (
+                                <Link
+                                    key={subItem.status}
+                                    to={`/all-guards?status=${subItem.status}`}
+                                    className={`sidebar-sub-item ${isSubActive("/all-guards", subItem.status) ? "active" : ""}`}
+                                >
+                                    {subItem.label}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 {/* Duty Types */}
                 <Link

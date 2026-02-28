@@ -38,8 +38,9 @@
 
 .welcome-text p {
     font-size: 0.95rem;
-    color: #64748b;
+    color: #334155;
     margin: 0;
+    font-weight: 500;
 }
 
 
@@ -159,9 +160,9 @@
 
 .breakdown-subtitle {
     font-size: 0.78rem;
-    color: #94a3b8;
+    color: #475569;
     margin: 0;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* ── Mini Status Cards (Active / Suspended / Terminated) ──── */
@@ -185,18 +186,21 @@
 }
 
 .mini-stat-success {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    border: 1px solid #6ee7b7;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border: 1px solid #047857;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
 }
 
 .mini-stat-warning {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 1px solid #fcd34d;
+    background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+    border: 1px solid #92400e;
+    box-shadow: 0 4px 14px rgba(180, 83, 9, 0.35);
 }
 
 .mini-stat-danger {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    border: 1px solid #fca5a5;
+    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+    border: 1px solid #991b1b;
+    box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35);
 }
 
 .mini-stat-label {
@@ -205,18 +209,19 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin: 0 0 0.5rem;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .mini-stat-success .mini-stat-label {
-    color: #065f46;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .mini-stat-warning .mini-stat-label {
-    color: #92400e;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .mini-stat-danger .mini-stat-label {
-    color: #991b1b;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .mini-stat-value {
@@ -225,37 +230,38 @@
     margin: 0;
     line-height: 1;
     letter-spacing: -0.02em;
+    color: #ffffff;
 }
 
 .mini-stat-success .mini-stat-value {
-    color: #059669;
+    color: #ffffff;
 }
 
 .mini-stat-warning .mini-stat-value {
-    color: #d97706;
+    color: #ffffff;
 }
 
 .mini-stat-danger .mini-stat-value {
-    color: #dc2626;
+    color: #ffffff;
 }
 
 .mini-stat-arrow {
     position: absolute;
     bottom: 0.625rem;
     right: 0.625rem;
-    opacity: 0.5;
+    opacity: 0.65;
 }
 
 .mini-stat-success .mini-stat-arrow {
-    color: #059669;
+    color: #ffffff;
 }
 
 .mini-stat-warning .mini-stat-arrow {
-    color: #d97706;
+    color: #ffffff;
 }
 
 .mini-stat-danger .mini-stat-arrow {
-    color: #dc2626;
+    color: #ffffff;
 }
 
 /* ── Quick Actions ────────────────────────────────────────── */

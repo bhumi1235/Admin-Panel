@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
-import { Shield, UserCheck, Trash2, Download, ChevronDown } from "lucide-react";
+import TerminationReasonModal from "../components/TerminationReasonModal";
+import { Plus, Eye, Trash2, Ban, Download, ChevronDown, Shield, UserCheck } from "lucide-react";
 import api from "../api/api";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
 import { getImageUrl } from "../utils/imageUtils";
 import "../styles/global/layout.css";
 import "../styles/shared/GuardTable.css";
+import "../styles/pages/Supervisors.css"; // Reuse supervisor styles for buttons
 
 function AllGuards() {
     const navigate = useNavigate();
@@ -16,30 +18,33 @@ function AllGuards() {
     const [guards, setGuards] = useState([]);
     const [supervisors, setSupervisors] = useState([]);
     const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+    const [terminationModal, setTerminationModal] = useState({ isOpen: false, guard: null, isEdit: false });
 
+    // Get status from query param: ?status=Active
     const queryParams = new URLSearchParams(location.search);
-    const statusFilter = "Active";
+    const statusFilter = queryParams.get('status') || 'Active';
 
     useEffect(() => {
-        const fetchAllGuards = async () => {
+        const fetchData = async () => {
             try {
-                // guards
+                // Fetch all guards
                 const guardsRes = await api.get(`/api/guards`);
                 const g = guardsRes.data.data;
 
                 const formattedGuards = g.map(guard => ({
                     id: guard.id,
-                    name: guard.fullName,
+                    name: guard.fullName || guard.name,
                     phone: guard.phone,
                     assignedArea: guard.assignedArea,
                     status: guard.status,
                     supervisorId: guard.supervisorId || guard.supervisor_id,
-                    profileImage: guard.profileImage || null
+                    profileImage: guard.profileImage || null,
+                    terminationReason: guard.terminationReason || guard.termination_reason
                 }));
 
                 setGuards(formattedGuards);
 
-                // Fetch ALL supervisors (Active, Suspended, Terminated) AND Admin profile
+                // Fetch ALL supervisors for displaying supervisor name
                 const [activeRes, suspendedRes, terminatedRes, adminRes] = await Promise.all([
                     api.get(`/api/admin/supervisors?status=Active`),
                     api.get(`/api/admin/supervisors?status=Suspended`),
@@ -53,7 +58,6 @@ function AllGuards() {
                     ...terminatedRes.data.data
                 ];
 
-                // Add Admin if available
                 if (adminRes.data) {
                     const adminData = adminRes.data.userData || adminRes.data.data || adminRes.data;
                     if (adminData && adminData.id) {
@@ -67,44 +71,46 @@ function AllGuards() {
                     }
                 }
 
-                const formattedSup = allSupervisors.map(sp => ({
+                setSupervisors(allSupervisors.map(sp => ({
                     id: sp.id,
                     fullName: sp.fullName || sp.name
-                }));
-
-                setSupervisors(formattedSup);
+                })));
 
             } catch (err) {
-                console.error("Failed to load guards:", err);
+                console.error("Failed to load data:", err);
             }
         };
 
-        fetchAllGuards();
-    }, [navigate]);
-
-
-
+        fetchData();
+    }, [statusFilter]);
 
     const getSupervisorName = (supervisorId) => {
-        if (!supervisorId) {
-            return 'Unassigned';
-        }
-        // Handle both string and number IDs
-        const supervisor = supervisors.find(s => s.id == supervisorId); // Use == for type coercion
-
-        if (supervisor) {
-            return supervisor.fullName;
-        }
-
-        // Return ID if name not found to help debugging
-        return `Unknown (ID: ${supervisorId})`;
+        if (!supervisorId) return 'Unassigned';
+        const supervisor = supervisors.find(s => s.id == supervisorId);
+        return supervisor ? supervisor.fullName : `Unknown (ID: ${supervisorId})`;
     };
 
-    const handleGuardClick = (guard) => {
-        navigate(`/guards/${guard.id}`);
+    const refreshGuards = async () => {
+        try {
+            const guardsRes = await api.get(`/api/guards`);
+            const g = guardsRes.data.data;
+            const formattedGuards = g.map(guard => ({
+                id: guard.id,
+                name: guard.fullName || guard.name,
+                phone: guard.phone,
+                assignedArea: guard.assignedArea,
+                status: guard.status,
+                supervisorId: guard.supervisorId || guard.supervisor_id,
+                profileImage: guard.profileImage || null,
+                terminationReason: guard.terminationReason || guard.termination_reason
+            }));
+            setGuards(formattedGuards);
+        } catch (err) {
+            console.error("Failed to refresh guards:", err);
+        }
     };
 
-    const filteredGuards = guards.filter(g => g.status === statusFilter);
+    const filteredGuards = guards.filter(g => g.status === statusFilter).sort((a, b) => a.id - b.id);
 
     const columns = [
         {
@@ -119,7 +125,7 @@ function AllGuards() {
                             style={photoUrl ? {
                                 background: `url(${photoUrl}) center/cover no-repeat`,
                                 fontSize: 0
-                            } : {}}
+                            } : undefined}
                         >
                             {!photoUrl && (row.name?.split(' ').map(n => n[0]).join('') || 'G')}
                         </div>
@@ -129,7 +135,7 @@ function AllGuards() {
             }
         },
         {
-            header: "Phone Number",
+            header: "Phone",
             accessor: "phone",
             render: (row) => (
                 <div className="guard-phone-cell">
@@ -170,44 +176,152 @@ function AllGuards() {
                 </span>
             )
         },
+        ...(statusFilter === 'Terminated' ? [{
+            header: "Termination Reason",
+            accessor: "terminationReason",
+            render: (row) => (
+                <div style={{
+                    maxWidth: '180px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    color: '#6b7280',
+                    fontSize: '0.875rem'
+                }}>
+                    {row.terminationReason || '—'}
+                </div>
+            )
+        }] : []),
         {
             header: "Actions",
             render: (row) => (
-                <div className="actions-cell" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+                <div className="actions-cell">
                     <button
                         onClick={(e) => { e.stopPropagation(); navigate(`/guards/${row.id}`); }}
                         className="btn-view"
                     >
+                        <Eye size={14} />
                         View
                     </button>
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();
-                            if (window.confirm(`Permanently delete ${row.name}? This cannot be undone.`)) {
+
+                    {row.status === "Suspended" && (
+                        <button
+                            onClick={async (e) => {
+                                e.stopPropagation();
                                 try {
-                                    await api.delete(`/api/admin/guards/${row.id}/permanent`);
-                                    const guardsRes = await api.get(`/api/guards`);
-                                    const updatedGuards = guardsRes.data.data.map(guard => ({
-                                        id: guard.id,
-                                        name: guard.fullName,
-                                        phone: guard.phone,
-                                        assignedArea: guard.assignedArea,
-                                        status: guard.status,
-                                        supervisorId: guard.supervisorId || guard.supervisor_id,
-                                        profileImage: guard.profileImage || null
-                                    }));
-                                    setGuards(updatedGuards.filter(g => g.status === "Active"));
+                                    await api.put(`/api/admin/guards/${row.id}/status`, { status: "Active" });
+                                    refreshGuards();
                                 } catch (err) {
-                                    console.error("Failed to delete guard:", err);
-                                    alert("Failed to permanently delete guard. Please try again.");
+                                    console.error("Failed to activate guard:", err);
                                 }
-                            }
-                        }}
-                        className="btn-icon-delete"
-                        title="Permanently delete"
-                    >
-                        <Trash2 size={16} />
-                    </button>
+                            }}
+                            className="btn-activate"
+                        >
+                            Activate
+                        </button>
+                    )}
+
+                    {row.status === "Active" && (
+                        <button
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                if (window.confirm(`Are you sure you want to suspend ${row.name}?`)) {
+                                    try {
+                                        await api.put(`/api/admin/guards/${row.id}/status`, { status: "Suspended" });
+                                        alert(`${row.name} can't log in on the app`);
+                                        refreshGuards();
+                                    } catch (err) {
+                                        console.error("Failed to suspend guard:", err);
+                                        alert("Failed to suspend guard. Please try again.");
+                                    }
+                                }
+                            }}
+                            className="btn-suspend"
+                        >
+                            <Ban size={14} />
+                            Suspend
+                        </button>
+                    )}
+
+                    {row.status !== "Terminated" && (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setTerminationModal({ isOpen: true, guard: row, isEdit: false });
+                                }}
+                                className="btn-terminate"
+                            >
+                                <Trash2 size={14} />
+                                Terminate
+                            </button>
+                            <button
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm(`Permanently delete ${row.name}? This cannot be undone.`)) {
+                                        try {
+                                            await api.delete(`/api/admin/guards/${row.id}/permanent`);
+                                            refreshGuards();
+                                        } catch (err) {
+                                            console.error("Failed to delete guard:", err);
+                                            alert("Failed to permanently delete guard.");
+                                        }
+                                    }
+                                }}
+                                className="btn-icon-delete"
+                                title="Permanently delete"
+                                style={{ padding: '0.5rem', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '6px', cursor: 'pointer' }}
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </>
+                    )}
+
+                    {row.status === "Terminated" && (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setTerminationModal({ isOpen: true, guard: row, isEdit: true });
+                                }}
+                                className="btn-edit-reason"
+                                style={{
+                                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '6px',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.375rem'
+                                }}
+                            >
+                                Edit Reason
+                            </button>
+                            <button
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm(`Permanently delete ${row.name}? This cannot be undone.`)) {
+                                        try {
+                                            await api.delete(`/api/admin/guards/${row.id}/permanent`);
+                                            refreshGuards();
+                                        } catch (err) {
+                                            console.error("Failed to delete guard:", err);
+                                            alert("Failed to permanently delete guard. Please try again.");
+                                        }
+                                    }
+                                }}
+                                className="btn-icon-delete"
+                                title="Permanently delete"
+                                style={{ padding: '0.5rem', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '6px', cursor: 'pointer' }}
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </>
+                    )}
                 </div>
             )
         }
@@ -225,6 +339,27 @@ function AllGuards() {
         }
     };
 
+    const handleTerminate = async (reason) => {
+        try {
+            if (terminationModal.isEdit) {
+                // Update termination reason
+                await api.put(`/api/admin/guards/${terminationModal.guard.id}/termination-reason`, {
+                    reason
+                });
+            } else {
+                // Terminate guard
+                await api.delete(`/api/admin/guards/${terminationModal.guard.id}`, {
+                    data: { reason }
+                });
+            }
+            refreshGuards();
+            setTerminationModal({ isOpen: false, guard: null, isEdit: false });
+        } catch (err) {
+            console.error("Failed to process request:", err);
+            alert(`Failed to ${terminationModal.isEdit ? 'update reason' : 'terminate guard'}. Please try again.`);
+        }
+    };
+
     return (
         <div className="page-container">
             <Sidebar />
@@ -237,10 +372,12 @@ function AllGuards() {
                     <div className="page-header">
                         <div>
                             <h1 className="page-title">
-                                Active Security Guards
+                                {statusFilter} Security Guards
                             </h1>
                             <p className="page-subtitle">
-                                View active guards and their assignments
+                                {statusFilter === 'Active' ? 'View active guards and their assignments' :
+                                    statusFilter === 'Suspended' ? 'View guards who are suspended' :
+                                        'View guards who have been terminated'}
                             </p>
                         </div>
                         <div style={{ display: "flex", gap: "1rem" }}>
@@ -283,14 +420,22 @@ function AllGuards() {
                     <Table
                         columns={columns}
                         data={filteredGuards}
-                        onRowClick={(row) => row.status !== "Terminated" && handleGuardClick(row)}
                         emptyMessage={`No ${statusFilter.toLowerCase()} guards found.`}
                     />
                 </div>
             </div>
+
+            {/* Termination Reason Modal */}
+            <TerminationReasonModal
+                isOpen={terminationModal.isOpen}
+                onClose={() => setTerminationModal({ isOpen: false, guard: null, isEdit: false })}
+                onSubmit={handleTerminate}
+                supervisorName={terminationModal.guard?.name || ''}
+                initialReason={terminationModal.guard?.terminationReason || ''}
+                titleLabel="Guard"
+            />
         </div>
     );
 }
 
 export default AllGuards;
-
