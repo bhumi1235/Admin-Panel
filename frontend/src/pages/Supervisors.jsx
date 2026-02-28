@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
 import TerminationReasonModal from "../components/TerminationReasonModal";
-import { Plus, Eye, Trash2, Ban, Download, ChevronDown, Shield } from "lucide-react";
+import { Plus, Eye, Trash2, Ban, Download, ChevronDown, Shield, UserX } from "lucide-react";
 import api from "../api/api";
 import { getImageUrl } from "../utils/imageUtils";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
@@ -183,7 +183,7 @@ function Supervisors() {
                                 }}
                                 className="btn-terminate"
                             >
-                                <Trash2 size={14} />
+                                <UserX size={14} />
                                 Terminate
                             </button>
                         </>

@@ -13,7 +13,7 @@ function Sidebar() {
         location.pathname.startsWith('/supervisors')
     );
     const [guardsOpen, setGuardsOpen] = useState(
-        location.pathname.startsWith('/all-guards') || location.pathname.startsWith('/guards')
+        location.pathname.startsWith('/guards')
     );
 
     const isActive = (path) => {
@@ -106,7 +106,7 @@ function Sidebar() {
                 <div>
                     <div
                         onClick={() => setGuardsOpen(!guardsOpen)}
-                        className={`sidebar-item ${(isActive("/all-guards") || guardsOpen) ? "group-active" : ""}`}
+                        className={`sidebar-item ${(isActive("/guards") || guardsOpen) ? "group-active" : ""}`}
                     >
                         <Shield size={22} strokeWidth={(isActive("/all-guards") || guardsOpen) ? 2.5 : 2} />
                         <span style={{ flex: 1 }}>All Guards</span>
@@ -118,8 +118,8 @@ function Sidebar() {
                             {guardSubItems.map((subItem) => (
                                 <Link
                                     key={subItem.status}
-                                    to={`/all-guards?status=${subItem.status}`}
-                                    className={`sidebar-sub-item ${isSubActive("/all-guards", subItem.status) ? "active" : ""}`}
+                                    to={`/guards?status=${subItem.status}`}
+                                    className={`sidebar-sub-item ${isSubActive("/guards", subItem.status) ? "active" : ""}`}
                                 >
                                     {subItem.label}
                                 </Link>

@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
 import TerminationReasonModal from "../components/TerminationReasonModal";
-import { Plus, Eye, Trash2, Ban, Download, ChevronDown, Shield, UserCheck } from "lucide-react";
+import { Plus, Eye, Trash2, Ban, Download, ChevronDown, Shield, UserCheck, UserX } from "lucide-react";
 import api from "../api/api";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
 import { getImageUrl } from "../utils/imageUtils";
@@ -253,7 +253,7 @@ function AllGuards() {
                                 }}
                                 className="btn-terminate"
                             >
-                                <Trash2 size={14} />
+                                <UserX size={14} />
                                 Terminate
                             </button>
                         </>
