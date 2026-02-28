@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, AlertCircle, Shield, User, Clock, Briefcase, FileText, Download, UserCheck, FileSpreadsheet } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Calendar, AlertCircle, Shield, User, Clock, Briefcase, FileText, Download, UserCheck, FileSpreadsheet, Ban, UserX } from 'lucide-react';
 import api from "../api/api";
+import TerminationReasonModal from "../components/TerminationReasonModal";
 import { getImageUrl } from "../utils/imageUtils";
 import { API_BASE_URL } from "../config/config";
 import "../styles/global/layout.css";
@@ -31,26 +32,27 @@ function GuardDetails() {
     const [guard, setGuard] = useState(null);
     const [supervisor, setSupervisor] = useState(null);
     const [photoModalOpen, setPhotoModalOpen] = useState(false);
+    const [terminationModal, setTerminationModal] = useState({ isOpen: false, guard: null, isEdit: false });
+
+    const fetchGuard = async () => {
+        try {
+            const res = await api.get(`/api/guards/${id}`);
+            const g = res.data.data;
+
+            setGuard(g);
+
+            if (g.supervisorId) {
+                const supRes = await api.get(`/api/admin/supervisors/${g.supervisorId}`);
+                setSupervisor(supRes.data.data);
+            }
+
+        } catch (err) {
+            console.error("Failed to load guard:", err);
+            navigate('/guards');
+        }
+    };
 
     useEffect(() => {
-        const fetchGuard = async () => {
-            try {
-                const res = await api.get(`/api/guards/${id}`);
-                const g = res.data.data;
-
-                setGuard(g);
-
-                if (g.supervisorId) {
-                    const supRes = await api.get(`/api/admin/supervisors/${g.supervisorId}`);
-                    setSupervisor(supRes.data.data);
-                }
-
-            } catch (err) {
-                console.error("Failed to load guard:", err);
-                navigate('/guards');
-            }
-        };
-
         fetchGuard();
     }, [id, navigate]);
 
@@ -236,7 +238,7 @@ function GuardDetails() {
                                     </span>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
                                 <button
                                     onClick={async () => {
                                         try {
@@ -253,7 +255,7 @@ function GuardDetails() {
                                     }}
                                 >
                                     <FileText size={18} />
-                                    PDF Download
+                                    PDF
                                 </button>
                                 <button
                                     onClick={async () => {
@@ -271,8 +273,65 @@ function GuardDetails() {
                                     }}
                                 >
                                     <FileSpreadsheet size={18} />
-                                    Excel Download
+                                    Excel
                                 </button>
+
+                                {/* Lifecycle Actions */}
+                                {guard.status === "Active" && (
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm(`Suspend ${guard.fullName}?`)) {
+                                                try {
+                                                    await api.put(`/api/admin/guards/${guard.id}/status`, { status: "Suspended" });
+                                                    alert("Guard suspended");
+                                                    fetchGuard();
+                                                } catch (e) { alert("Failed to suspend"); }
+                                            }
+                                        }}
+                                        style={{
+                                            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                                            padding: '0.5rem 1rem', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                            color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '600', cursor: 'pointer'
+                                        }}
+                                    >
+                                        <Ban size={18} />
+                                        Suspend
+                                    </button>
+                                )}
+
+                                {guard.status === "Suspended" && (
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                await api.put(`/api/admin/guards/${guard.id}/status`, { status: "Active" });
+                                                alert("Guard activated");
+                                                fetchGuard();
+                                            } catch (e) { alert("Failed to activate"); }
+                                        }}
+                                        style={{
+                                            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                                            padding: '0.5rem 1rem', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                            color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '600', cursor: 'pointer'
+                                        }}
+                                    >
+                                        <UserCheck size={18} />
+                                        Activate
+                                    </button>
+                                )}
+
+                                {guard.status !== "Terminated" && (
+                                    <button
+                                        onClick={() => setTerminationModal({ isOpen: true, guard: guard })}
+                                        style={{
+                                            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                                            padding: '0.5rem 1rem', background: 'linear-gradient(135deg, #374151 0%, #111827 100%)',
+                                            color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '600', cursor: 'pointer'
+                                        }}
+                                    >
+                                        <UserX size={18} />
+                                        Terminate
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -569,6 +628,24 @@ function GuardDetails() {
                     </div>
                 </div>
             </div>
+
+            <TerminationReasonModal
+                isOpen={terminationModal.isOpen}
+                onClose={() => setTerminationModal({ isOpen: false, guard: null, isEdit: false })}
+                onSubmit={async (reason) => {
+                    try {
+                        await api.delete(`/api/admin/guards/${terminationModal.guard.id}`, {
+                            data: { reason }
+                        });
+                        fetchGuard();
+                        setTerminationModal({ isOpen: false, guard: null, isEdit: false });
+                    } catch (err) {
+                        console.error("Failed to terminate guard:", err);
+                        alert("Failed to terminate guard.");
+                    }
+                }}
+                name={terminationModal.guard?.fullName}
+            />
         </div>
     );
 }

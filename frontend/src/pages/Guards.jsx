@@ -3,8 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Table from "../components/Table";
-import { ArrowLeft, Shield, Download, ChevronDown } from "lucide-react";
+import { ArrowLeft, Shield, Download, ChevronDown, Ban, UserX, UserCheck } from "lucide-react";
 import api from "../api/api";
+import TerminationReasonModal from "../components/TerminationReasonModal";
 import { exportToPDF, exportToExcel } from "../utils/exportUtils";
 import "../styles/global/layout.css";
 import "../styles/shared/GuardTable.css";
@@ -17,6 +18,7 @@ function Guards() {
     const [supervisor, setSupervisor] = useState(null);
     const [guards, setGuards] = useState([]);
     const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+    const [terminationModal, setTerminationModal] = useState({ isOpen: false, guard: null, isEdit: false });
 
     const fetchSupervisorAndGuards = async () => {
         try {
@@ -103,15 +105,77 @@ function Guards() {
         {
             header: "Actions",
             render: (row) => (
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/guards/${row.id}`, { state: { fromSupervisorId: id } });
-                    }}
-                    className="btn-view"
-                >
-                    View Details
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/guards/${row.id}`, { state: { fromSupervisorId: id } });
+                        }}
+                        className="btn-view"
+                        title="View Details"
+                    >
+                        View Details
+                    </button>
+
+                    {row.status === "Active" && (
+                        <button
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                if (window.confirm(`Are you sure you want to suspend ${row.name}?`)) {
+                                    try {
+                                        await api.put(`/api/admin/guards/${row.id}/status`, { status: "Suspended" });
+                                        alert(`${row.name} is now suspended`);
+                                        fetchSupervisorAndGuards();
+                                    } catch (err) {
+                                        console.error("Failed to suspend guard:", err);
+                                        alert("Failed to suspend guard.");
+                                    }
+                                }
+                            }}
+                            className="btn-suspend"
+                            title="Suspend Guard"
+                        >
+                            <Ban size={14} />
+                        </button>
+                    )}
+
+                    {row.status === "Suspended" && (
+                        <button
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                try {
+                                    await api.put(`/api/admin/guards/${row.id}/status`, { status: "Active" });
+                                    alert(`${row.name} is now active`);
+                                    fetchSupervisorAndGuards();
+                                } catch (err) {
+                                    console.error("Failed to activate guard:", err);
+                                    alert("Failed to activate guard.");
+                                }
+                            }}
+                            className="btn-activate"
+                            title="Activate Guard"
+                            style={{
+                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                color: 'white', border: 'none', padding: '0.5rem', borderRadius: '6px', cursor: 'pointer'
+                            }}
+                        >
+                            <UserCheck size={14} />
+                        </button>
+                    )}
+
+                    {row.status !== "Terminated" && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setTerminationModal({ isOpen: true, guard: row });
+                            }}
+                            className="btn-terminate"
+                            title="Terminate Guard"
+                        >
+                            <UserX size={14} />
+                        </button>
+                    )}
+                </div>
             )
         }
     ];
@@ -221,6 +285,24 @@ function Guards() {
                         data={guards}
                         onRowClick={(row) => navigate(`/guards/${row.id}`, { state: { fromSupervisorId: id } })}
                         emptyMessage={`No guards assigned to ${supervisor.fullName} yet.`}
+                    />
+
+                    <TerminationReasonModal
+                        isOpen={terminationModal.isOpen}
+                        onClose={() => setTerminationModal({ isOpen: false, guard: null, isEdit: false })}
+                        onSubmit={async (reason) => {
+                            try {
+                                await api.delete(`/api/admin/guards/${terminationModal.guard.id}`, {
+                                    data: { reason }
+                                });
+                                fetchSupervisorAndGuards();
+                                setTerminationModal({ isOpen: false, guard: null, isEdit: false });
+                            } catch (err) {
+                                console.error("Failed to terminate guard:", err);
+                                alert("Failed to terminate guard.");
+                            }
+                        }}
+                        name={terminationModal.guard?.name}
                     />
                 </div>
             </div>
