@@ -255,25 +255,6 @@ function AllGuards() {
                                 <Trash2 size={14} />
                                 Terminate
                             </button>
-                            <button
-                                onClick={async (e) => {
-                                    e.stopPropagation();
-                                    if (window.confirm(`Permanently delete ${row.name}? This cannot be undone.`)) {
-                                        try {
-                                            await api.delete(`/api/admin/guards/${row.id}/permanent`);
-                                            refreshGuards();
-                                        } catch (err) {
-                                            console.error("Failed to delete guard:", err);
-                                            alert("Failed to permanently delete guard.");
-                                        }
-                                    }
-                                }}
-                                className="btn-icon-delete"
-                                title="Permanently delete"
-                                style={{ padding: '0.5rem', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '6px', cursor: 'pointer' }}
-                            >
-                                <Trash2 size={16} />
-                            </button>
                         </>
                     )}
 

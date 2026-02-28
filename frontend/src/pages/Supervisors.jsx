@@ -186,30 +186,6 @@ function Supervisors() {
                                 <Trash2 size={14} />
                                 Terminate
                             </button>
-                            <button
-                                onClick={async (e) => {
-                                    e.stopPropagation();
-                                    if (window.confirm(`Permanently delete ${row.fullName}? This cannot be undone.`)) {
-                                        try {
-                                            await api.delete(`/api/admin/supervisors/${row.id}/permanent`);
-                                            // Refresh
-                                            const res = await api.get(`/api/admin/supervisors`);
-                                            setSupervisors(res.data.data.filter(s => s.status === statusFilter).map(s => ({
-                                                ...s,
-                                                fullName: s.fullName || s.full_name,
-                                                profileImage: s.profileImage || s.profile_image
-                                            })).sort((a, b) => a.id - b.id));
-                                        } catch (err) {
-                                            console.error("Failed to delete supervisor:", err);
-                                            alert("Failed to permanently delete supervisor.");
-                                        }
-                                    }
-                                }}
-                                className="btn-icon-delete"
-                                title="Permanently delete"
-                            >
-                                <Trash2 size={16} />
-                            </button>
                         </>
                     )}
 

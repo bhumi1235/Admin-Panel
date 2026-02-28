@@ -64,10 +64,10 @@
 }
 
 .login-logo-container {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 1.25rem;
-    border-radius: 20px;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    border-radius: 18px;
     background: #ffffff;
     display: flex;
     align-items: center;
@@ -87,9 +87,19 @@
 .login-title {
     margin: 0;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 800;
     position: relative;
     z-index: 1;
+}
+
+.text-red {
+    color: #ef4444;
+    /* matching the panel red */
+}
+
+.text-blue {
+    color: #3b82f6;
+    /* matching the panel blue */
 }
 
 .login-subtitle {

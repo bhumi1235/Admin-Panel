@@ -67,7 +67,9 @@ function Login() {
                             className="login-logo-img"
                         />
                     </div>
-                    <h2 className="login-title">Smart Rangers</h2>
+                    <h2 className="login-title">
+                        <span className="text-red">Smart</span> <span className="text-blue">Rangers</span>
+                    </h2>
                     <p className="login-subtitle">Admin Panel Login</p>
                 </div>
 

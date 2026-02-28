@@ -93,10 +93,11 @@
 .summary-label {
     font-size: 0.8rem;
     font-weight: 600;
-    opacity: 0.85;
+    opacity: 0.95;
     margin: 0 0 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    color: #ffffff;
 }
 
 .summary-value {

@@ -66,7 +66,6 @@
 
 .custom-table tbody tr:hover {
     background: #f5f6ff !important;
-    transform: scale(1.001);
     box-shadow: inset 0 0 0 1px #e8eaff;
 }
 
